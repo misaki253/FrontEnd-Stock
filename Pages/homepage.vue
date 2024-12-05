@@ -1,11 +1,59 @@
 <template>
-    <h1>giks;dls;</h1>
-</template>
-
-<script setup>
-
-</script>
-
-<style scoped>
-
-</style>
+    <div>
+      <h1 class="text-2xl font-bold">About Us</h1>
+      <p class="mt-4">Learn more about our application.</p>
+      <h1 class="text-2xl font-bold">About Us</h1>
+      <p class="mt-4">Learn more about our application.</p>
+      <h1 class="text-2xl font-bold">About Us</h1>
+      <p class="mt-4">Learn more about our application.</p>
+      <h1 class="text-2xl font-bold">About Us</h1>
+      <p class="mt-4">Learn more about our application.</p>
+      <h1 class="text-2xl font-bold">About Us</h1>
+      <p class="mt-4">Learn more about our application.</p>
+      <h1 class="text-2xl font-bold">About Us</h1>
+      <p class="mt-4">Learn more about our application.</p>
+      <h1 class="text-2xl font-bold">About Us</h1>
+      <p class="mt-4">Learn more about our application.</p>
+      <h1 class="text-2xl font-bold">About Us</h1>
+      <p class="mt-4">Learn more about our application.</p>
+      <h1 class="text-2xl font-bold">About Us</h1>
+      <p class="mt-4">Learn more about our application.</p>
+      <h1 class="text-2xl font-bold">About Us</h1>
+      <p class="mt-4">Learn more about our application.</p>
+      <h1 class="text-2xl font-bold">About Us</h1>
+      <p class="mt-4">Learn more about our application.</p>
+      <h1 class="text-2xl font-bold">About Us</h1>
+      <p class="mt-4">Learn more about our application.</p>
+      <h1 class="text-2xl font-bold">About Us</h1>
+      <p class="mt-4">Learn more about our application.</p>
+      <h1 class="text-2xl font-bold">About Us</h1>
+      <p class="mt-4">Learn more about our application.</p>
+      <h1 class="text-2xl font-bold">About Us</h1>
+      <p class="mt-4">Learn more about our application.</p>
+      <h1 class="text-2xl font-bold">About Us</h1>
+      <p class="mt-4">Learn more about our application.</p>
+      <h1 class="text-2xl font-bold">About Us</h1>
+      <p class="mt-4">Learn more about our application.</p>
+      <h1 class="text-2xl font-bold">About Us</h1>
+      <p class="mt-4">Learn more about our application.</p>
+      <h1 class="text-2xl font-bold">About Us</h1>
+      <p class="mt-4">Learn more about our application.</p>
+      <h1 class="text-2xl font-bold">About Us</h1>
+      <p class="mt-4">Learn more about our application.</p>
+      <h1 class="text-2xl font-bold">About Us</h1>
+      <p class="mt-4">Learn more about our application.</p>
+      <h1 class="text-2xl font-bold">About Us</h1>
+      <p class="mt-4">Learn more about our application.</p>
+      <h1 class="text-2xl font-bold">About Us</h1>
+      <p class="mt-4">Learn more about our application.</p>
+      <h1 class="text-2xl font-bold">About Us</h1>
+      <p class="mt-4">Learn more about our application.</p>
+      <h1 class="text-2xl font-bold">About Us</h1>
+      <p class="mt-4">Learn more about our application.</p>
+      <h1 class="text-2xl font-bold">About Us</h1>
+      <p class="mt-4">Learn more about our application.</p>
+      <h1 class="text-2xl font-bold">About Us</h1>
+      <p class="mt-4">Learn more about our application.</p>
+    </div>
+  </template>
+  
