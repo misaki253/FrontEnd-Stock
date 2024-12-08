@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="container max-w-full w-full p-5">
       <h1 class="text-2xl font-bold">About Us</h1>
       <p class="mt-4">Learn more about our application.</p>
       <h1 class="text-2xl font-bold">About Us</h1>

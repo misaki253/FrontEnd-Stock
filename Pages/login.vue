@@ -120,7 +120,7 @@
         if (user) {
           console.log("Login successful for", user);
           alert("Login สำเร็จ");
-          this.$router.push("/homepage"); 
+          this.$router.push("/admin/homepage"); 
         } else {
           console.log("Invalid username or password");
           alert("login ไม่สำเร็จ");

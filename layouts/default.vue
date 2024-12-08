@@ -1,29 +1,43 @@
 <template>
-  <header v-if="!isLoginPage" class="fixed top-0 left-0 w-full z-10">
+  <header v-if="!isLoginPage" class="fixed top-0 left-0 w-full z-10 bg-white">
     <nav>
-      <div class="bg-gray-800 h-14 flex items-center p-5">
-        <button
-          @click="toggleSidebar"
-          class="text-xl focus:outline-none sm:hidden"
-          aria-label="Toggle Sidebar">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke-width="1.5"
-            stroke="currentColor"
-            class="size-6 text-white">
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-          </svg>
-        </button>
+      <div class="grid grid-flow-col gap-4 p-4">
+        <div class="">
+          <button
+            @click="toggleSidebar"
+            class="text-xl focus:outline-none sm:hidden"
+            aria-label="Toggle Sidebar">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              class="size-6 text-gray-800">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+            </svg>
+          </button>
+        </div>
+        <div class="flex justify-end">
+          <span
+            class="inline-block size-10 overflow-hidden rounded-full bg-white border border-black">
+            <svg
+              class="size-full text-black"
+              fill="currentColor"
+              viewBox="0 0 24 24">
+              <path
+                d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
+            </svg>
+          </span>
+        </div>
       </div>
     </nav>
   </header>
 
-  <div class="flex h-full bg-gray-100">
+  <div class="flex h-full ">
     <aside
       v-if="!isLoginPage"
       :class="[
@@ -57,8 +71,8 @@
         <ul class="space-y-4">
           <li>
             <NuxtLink
-              to="/homepage"
-              class="flex items-center p-2 rounded hover:bg-gray-700">
+              to="/admin/homepage"
+              class="flex items-center p-2 rounded hover:bg-gray-700 hover:text-yellow-500">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -76,8 +90,8 @@
           </li>
           <li>
             <NuxtLink
-              to="/employee"
-              class="flex items-center p-2 rounded hover:bg-gray-700">
+              to="/admin/employee"
+              class="flex items-center p-2 rounded hover:bg-gray-700 hover:text-yellow-500">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -95,9 +109,7 @@
             </NuxtLink>
           </li>
           <li>
-            <NuxtLink
-              to="/product"
-              class="flex items-center p-2 rounded hover:bg-gray-700">
+            <div @click="toggleDropdown" class="flex items-center p-2 rounded hover:bg-gray-700">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -110,10 +122,48 @@
                   stroke-linejoin="round"
                   d="m20.25 7.5-.625 10.632a2.25 2.25 0 0 1-2.247 2.118H6.622a2.25 2.25 0 0 1-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125Z" />
               </svg>
+              <button type="button" class="ml-2">
+                Product
+              </button>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="size-4 ml-12">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+              </svg>
+            </div>
 
-              <span class="ml-2">Product</span>
-            </NuxtLink>
+            <ul v-if="isDropdownOpen" class="py-2 space-y-2">
+              <li>
+                <a
+                  href="/admin/product"
+                  class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700 hover:text-yellow-500">
+                  Products
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#"
+                  class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700 hover:text-yellow-500">
+                  Billing
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#"
+                  class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700 hover:text-yellow-500">
+                  Invoice
+                </a>
+              </li>
+            </ul>
           </li>
+          
         </ul>
       </nav>
 
@@ -137,8 +187,11 @@
     </aside>
 
     <main
-      :class="isLoginPage ? 'w-full' : 'flex-1'"
-      class="[ 'block md:ml-64 mt-20 , !isLoginPage ? 'flex-1' : 'w-full', ]">
+      <div
+      :class="[
+        !isLoginPage ? 'block ml-5 md:ml-64 mt-20' : 'block',
+        !isLoginPage ? 'flex-1' : 'w-full',
+      ]">
       <slot />
     </main>
   </div>
@@ -148,6 +201,7 @@
 export default {
   data() {
     return {
+      isDropdownOpen: false,
       isSidebarOpen: false, // State to control the sidebar visibility
     };
   },
@@ -160,6 +214,9 @@ export default {
     toggleSidebar() {
       this.isSidebarOpen = !this.isSidebarOpen;
       document.body.style.overflow = this.isSidebarOpen ? "hidden" : "auto"; // Prevent body scroll when sidebar is open
+    },
+    toggleDropdown() {
+      this.isDropdownOpen = !this.isDropdownOpen;
     },
   },
 };

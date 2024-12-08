@@ -13,7 +13,10 @@
     "nuxt": "^3.14.1592",
     "vite": "^6.0.1",
     "vue": "latest",
-    "vue-router": "latest"
+    "vue-qr-reader": "^1.6.2",
+    "vue-qrcode-reader": "^5.5.11",
+    "vue-router": "latest",
+    "vue-upload-component": "^2.8.23"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.20",
