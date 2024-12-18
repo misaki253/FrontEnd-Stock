@@ -42,7 +42,8 @@
           </tr>
         </thead>
         <tbody class="divide-y divide-gray-300 bg-white">
-          <tr v-for="products in paginatedProduct" :key="products.p_id" @click="navigateToDetail(products)" class="cursor-pointer hover:bg-gray-100">
+          <tr v-for="products in paginatedProduct" :key="products.p_id" @click="navigateToDetail(products)"
+            class="cursor-pointer hover:bg-gray-100">
             <td class="text-center w-10">
               <input type="checkbox" v-model="products.checked" class="cursor-pointer h-4 w-4">
             </td>
@@ -138,9 +139,9 @@ export default {
     };
   },
   watch: {
-    items: {
-      handler(newItems) {
-        this.selectAll = newItems.every((item) => item.checked);
+    products: {
+      handler(newProducts) {
+        this.selectAll = newProducts.every((product) => product.checked);
       },
       deep: true,
     },
@@ -176,13 +177,10 @@ export default {
       this.$router.push("/admin/add_product");
     },
     navigateToDetail(product) {
-      this.$router.push({
-        name: 'productdetail',
-        params: { id: product.p_id },
-      });
+      this.$router.push(`/admin/productdetail/${product.p_id}`);
     },
     toggleAll() {
-      this.paginatedProduct.forEach((product) => {
+      this.products.forEach((product) => {
         product.checked = this.selectAll;
       });
     },
