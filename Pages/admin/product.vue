@@ -174,7 +174,7 @@ export default {
       }
     },
     navigateToPage() {
-      this.$router.push("/admin/add_product");
+      this.$router.push("/admin/addproduct");
     },
     navigateToDetail(product) {
       this.$router.push(`/admin/productdetail/${product.p_id}`);
