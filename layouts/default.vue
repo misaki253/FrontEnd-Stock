@@ -5,7 +5,7 @@
         <div class="">
           <button
             @click="toggleSidebar"
-            class="text-xl focus:outline-none sm:hidden"
+            class="text-xl focus:outline-none xl:hidden"
             aria-label="Toggle Sidebar">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -42,13 +42,13 @@
       v-if="!isLoginPage"
       :class="[
         isSidebarOpen ? 'translate-x-0' : '-translate-x-full',
-        'fixed z-30 w-60 h-full bg-gray-800 text-white transition-transform sm:translate-x-0',
+        'fixed z-30 w-60 h-full bg-gray-800 text-white transition-transform xl:translate-x-0',
       ]"
       :aria-hidden="!isSidebarOpen">
       <div class="p-5 h-14">
         <button
           @click="toggleSidebar"
-          class="text-xl focus:outline-none sm:hidden"
+          class="text-xl focus:outline-none xl:hidden"
           aria-label="Toggle Sidebar">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -189,7 +189,7 @@
     <main
       <div
       :class="[
-        !isLoginPage ? 'block ml-5 md:ml-64 mt-20' : 'block',
+        !isLoginPage ? 'block ml-5 xl:ml-64 mt-20' : 'block',
         !isLoginPage ? 'flex-1' : 'w-full',
       ]">
       <slot />
