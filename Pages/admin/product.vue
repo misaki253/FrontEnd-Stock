@@ -115,7 +115,6 @@
       </table>
     </div>
 
-    
     <div class="flex justify-between items-center mt-4 bg-white p-3">
       <div>
         รายการที่ {{ startIndex + 1 }} ถึง {{ endIndex }} จากทั้งหมด
