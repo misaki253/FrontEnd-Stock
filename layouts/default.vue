@@ -189,7 +189,7 @@
     <main
       <div
       :class="[
-        !isLoginPage ? 'block ml-5 xl:ml-64 mt-20' : 'block',
+        !isLoginPage ? 'block xl:ml-64 mt-20' : 'block',
         !isLoginPage ? 'flex-1' : 'w-full',
       ]">
       <slot />

@@ -25,7 +25,7 @@
     </div>
 
     <!-- Pagination Controls -->
-    <div class="bg-gray-500 mt-10 p-5">
+    <div class="bg-gray-500 mt-10 p-5 rounded-xl">
       <div>
         <div class="bg-white p-2">
           Hitory
@@ -63,11 +63,7 @@
           <!-- Total Items Display -->
           <div>
             รายการที่ {{ startIndex + 1 }} ถึง {{ endIndex }} จากทั้งหมด {{ history.length }} รายการ
-          </div>
-
-          <!-- Items per Page Dropdown -->
-          <div>
-            <select v-model="perPage" @change="currentPage = 1">
+            <select v-model="perPage" @change="currentPage = 1" class=" border rounded ">
               <option v-for="size in [5, 10, 15, 20]" :key="size" :value="size">
                 {{ size }} รายการต่อหน้า
               </option>
