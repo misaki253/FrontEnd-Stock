@@ -98,10 +98,7 @@
                         {{ products.pname }}
                       </div>
                       <div class=" text-gray-500 text-sm sm:hidden">
-                        {{ products.p_id }}
-                      </div>
-                      <div class="text-gray-500 text-sm truncate sm:hidden">
-                        {{ products.p_type }}
+                        {{ products.p_id }} {{ products.p_type }}
                       </div>
                     </div>
                   </td>

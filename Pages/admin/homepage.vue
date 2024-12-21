@@ -1,6 +1,6 @@
 <template>
   <div class="">
-    <div class="mt-10 rounded-xl px-5 w-screen sm:w-full">
+    <div class="rounded-xl px-5 w-screen sm:w-full">
       <div class="bg-gray-500 p-5 rounded">
         <div class="bg-white p-2">สถานะสินค้าลงคลัง</div>
         <div class="mt-5">

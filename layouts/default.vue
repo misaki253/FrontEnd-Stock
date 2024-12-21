@@ -1,5 +1,5 @@
 <template>
-  <header v-if="!isLoginPage" class="fixed top-0 left-0 w-full z-10 bg-white">
+  <header v-if="!isLoginPage,!isScanPage" class="fixed top-0 left-0 w-full z-10 bg-white">
     <nav>
       <div class="grid grid-flow-col gap-4 p-4">
         <div class="flex justify-end">
@@ -169,14 +169,14 @@
     <main
       <div
       :class="[
-        !isLoginPage ? 'block xl:ml-64 mt-20 mb-20' : 'block',
-        !isLoginPage ? 'flex-1' : 'w-full',
+        !isLoginPage,!isScanPage ? 'block xl:ml-64 mt-20 mb-20' : 'block',
+        !isLoginPage,!isScanPage ? 'flex-1' : 'w-full',
       ]">
       <slot />
     </main>
 
     <footer
-      v-if="!isLoginPage"
+      v-if="!isLoginPage ,!isScanPage" 
       class="fixed bottom-0 left-0 w-full bg-white shadow-lg z-10 flex items-center justify-between px-4 py-2 xl:hidden">
       <nuxt-link to="/admin/homepage">
         <div class="flex flex-col items-center text-gray-500">
@@ -299,6 +299,9 @@ export default {
     isLoginPage() {
       return this.$route.path === "/login";
     },
+    isScanPage(){
+      return this.$route.path === "/admin/scan"
+    }
   },
   methods: {
     toggleSidebar() {

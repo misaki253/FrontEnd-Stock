@@ -94,15 +94,12 @@
                         {{ person.name }}
                       </div>
                       <div class=" text-gray-500 text-sm sm:hidden">
-                        {{ person.role }}
-                      </div>
-                      <div class="text-gray-500 text-sm truncate sm:hidden">
-                        {{ person.uid }}
+                        {{ person.uid }} {{ person.role }}
                       </div>
                     </div>
                   </div>
                 </td>
-                <td class="whitespace-nowrap px-3 py-5 text-sm text-gray-500 hidden sm:table-cell">
+                <td class="whitespace-nowrap px-3 py-5 text-sm text-gray-500  hidden sm:table-cell">
                   {{ person.uid }}
                 </td>
                 <td
@@ -224,7 +221,7 @@ export default {
           username: "admin",
           password: "a@1234",
           status: "Active",
-          role: "Member",
+          role: "Employee",
           image:
             "https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
         },
@@ -234,7 +231,7 @@ export default {
           username: "admin",
           password: "a@1234",
           status: "Active",
-          role: "Member",
+          role: "Employee",
           image:
             "https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
         },
@@ -244,7 +241,7 @@ export default {
           username: "admin",
           password: "a@1234",
           status: "Active",
-          role: "Member",
+          role: "Employee",
           image:
             "https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
         },
@@ -254,7 +251,7 @@ export default {
           username: "admin",
           password: "a@1234",
           status: "Active",
-          role: "Member",
+          role: "Employee",
           image:
             "https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
         },
@@ -264,7 +261,7 @@ export default {
           username: "admin",
           password: "a@1234",
           status: "Active",
-          role: "Member",
+          role: "Employee",
           image:
             "https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
         },
@@ -274,7 +271,7 @@ export default {
           username: "admin",
           password: "a@1234",
           status: "Active",
-          role: "Member",
+          role: "Employee",
           image:
             "https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
         },
