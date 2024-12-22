@@ -1,211 +1,124 @@
 <template>
-  <div>
-    <div class="">
-      <header class="fixed top-0 left-0 w-full z-10 bg-black">
-        <nav>
-          <div class="grid grid-flow-col gap-4 p-4">
-            <div class="">
-              <span class=" ">
-                <svg
-                  @click="goBack"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke-width="1.5"
-                  stroke="currentColor"
-                  class="size-6 text-white">
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M15.75 19.5 8.25 12l7.5-7.5" />
-                </svg>
-              </span>
-            </div>
-          </div>
-        </nav>
+    <div class="flex flex-col h-screen">
+      <!-- Header -->
+      <header class="bg-blue-500 text-white p-4">
+        <h1 class="text-lg font-bold">สแกน QR Code สินค้า</h1>
       </header>
+  
+      <!-- Body -->
+      <main class="flex flex-col flex-1 p-4 space-y-4">
+        <!-- Scan Area -->
+        <section class="bg-gray-100 p-4 rounded shadow flex items-center justify-center">
+          <div class="text-center">
+            <p class="text-sm text-gray-500">สแกน QR Code</p>
+            <div class="border-dashed border-4 border-gray-300 w-48 h-48"></div>
+            <button
+              class="bg-blue-500 text-white mt-4 px-4 py-2 rounded"
+              @click="startScanner"
+            >
+              เริ่มสแกน
+            </button>
+            <video ref="scanner" class="mt-4 hidden"></video>
+          </div>
+        </section>
+  
+        <!-- Product List -->
+        <section class="flex-1 overflow-y-auto">
+          <table class="min-w-full border-collapse border border-gray-300">
+            <thead>
+              <tr class="bg-gray-200 text-left">
+                <th class="border border-gray-300 px-4 py-2">สินค้า</th>
+                <th class="border border-gray-300 px-4 py-2">คงเหลือ</th>
+                <th class="border border-gray-300 px-4 py-2">จำนวนหัก</th>
+                <th class="border border-gray-300 px-4 py-2">สถานะ</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(item, index) in scannedItems" :key="index">
+                <td class="border border-gray-300 px-4 py-2">{{ item.name }}</td>
+                <td class="border border-gray-300 px-4 py-2">{{ item.stock }}</td>
+                <td class="border border-gray-300 px-4 py-2">
+                  <input
+                    type="number"
+                    class="border px-2 py-1 w-16 text-center"
+                    v-model.number="item.quantity"
+                  />
+                </td>
+                <td
+                  class="border border-gray-300 px-4 py-2"
+                  :class="{
+                    'text-green-500': item.status === 'available',
+                    'text-red-500': item.status === 'unavailable'
+                  }"
+                >
+                  {{ item.status === 'available' ? 'พร้อมใช้งาน' : 'ไม่พร้อมใช้งาน' }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+      </main>
+  
+      <!-- Footer -->
+      <footer class="bg-gray-100 p-4 flex justify-end space-x-4">
+        <button class="bg-gray-500 text-white px-4 py-2 rounded" @click="reset">
+          รีเซ็ต
+        </button>
+        <button class="bg-blue-500 text-white px-4 py-2 rounded" @click="confirm">
+          ยืนยัน
+        </button>
+      </footer>
     </div>
-    <div class="w-full h-screen bg-black relative">
-      <!-- กล้องเต็มหน้าจอ -->
-      <div id="scanner-container" class="absolute inset-0"></div>
-      <!-- Modal for displaying scanned result -->
-      <div
-        v-if="isModalOpen"
-        class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-        <div class="bg-white p-6 rounded-lg">
-          <p class="text-xl font-bold text-black">Scanned Result:</p>
-          <p class="text-lg text-black">{{ scannedResult }}</p>
-          <button
-            @click="closeModal"
-            class="mt-4 bg-blue-500 text-white py-2 px-4 rounded">
-            Close
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-</template>
-
-<script>
-  import Quagga from "quagga";
-  import jsQR from "jsqr";
-
-  export default {
-    data() {
-      return {
-        scannedResult: "",  // Ensure this is initialized properly
-        qrCanvas: null,
-        qrContext: null,
-        isModalOpen: false, // New state to manage modal visibility
-      };
-    },
-    mounted() {
-      this.initScanner();
-    },
-    methods: {
-  goBack() {
-    this.$router.go(-1);
-  },
-  initScanner() {
-    // Barcode Scanner
-    Quagga.init(
-      {
-        inputStream: {
-          type: "LiveStream",
-          target: document.querySelector("#scanner-container"),
-          constraints: {
-            width: { ideal: 1280 }, // Set resolution
-            height: { ideal: 720 },
-            facingMode: "environment", // Use rear camera
-          },
-        },
-        decoder: {
-          readers: ["code_128_reader", "ean_reader"], // Supported barcode types
-        },
-      },
-      (err) => {
-        if (err) {
-          console.error(err);
-          return;
-        }
-        Quagga.start();
-      }
-    );
-
-    Quagga.onDetected(this.onDetected);
-
-    // QR Code Scanner
-    this.initQrScanner();
-  },
-  initQrScanner() {
-    const video = document.querySelector("video");
-    const canvas = document.createElement("canvas");
-    this.qrCanvas = canvas;
-    this.qrContext = canvas.getContext("2d");
-
-    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-      navigator.mediaDevices
-        .getUserMedia({
-          video: {
-            facingMode: "environment", // Use rear camera
-            width: { ideal: 1280 }, // Set resolution
-            height: { ideal: 720 },
-          },
-        })
-        .then((stream) => {
-          video.srcObject = stream;
-          video.play();
-          this.scanQrCode(); // Start QR scanning
-        });
-    }
-  },
-  scanQrCode() {
-    const video = document.querySelector("video");
-    if (
-      this.qrCanvas &&
-      this.qrContext &&
-      video.readyState === video.HAVE_ENOUGH_DATA
-    ) {
-      this.qrCanvas.width = video.videoWidth;
-      this.qrCanvas.height = video.videoHeight;
-      this.qrContext.drawImage(
-        video,
-        0,
-        0,
-        video.videoWidth,
-        video.videoHeight
-      );
-
-      const imageData = this.qrContext.getImageData(
-        0,
-        0,
-        video.videoWidth,
-        video.videoHeight
-      );
-      const code = jsQR(imageData.data, imageData.width, imageData.height);
-
-      if (code) {
-        this.scannedResult = code.data;
-        console.log("QR Code detected:", code.data);
-        this.isModalOpen = true; // Open modal on QR code scan
-      } else {
-        requestAnimationFrame(this.scanQrCode);
-      }
-    } else {
-      requestAnimationFrame(this.scanQrCode);
-    }
-  },
-  onDetected(result) {
-  if (result && result.codeResult && result.codeResult.code) {
-    console.log("Barcode detected:", result.codeResult.code);
-    this.scannedResult = result.codeResult.code;
-    Quagga.stop(); // หยุดการสแกน
-    this.isModalOpen = true; // เปิด modal เมื่อสแกนบาร์โค้ดสำเร็จ
-  } else {
-    console.error("Invalid result from Quagga:", result); // เพิ่มการแสดงข้อผิดพลาดหากไม่มีข้อมูล
-  }
-},
-
-  closeModal() {
-    this.isModalOpen = false;
-    this.resetScanner(); // Reset scanner to continue scanning
-  },
-  resetScanner() {
-    // Stop Quagga and restart it
-    Quagga.stop();
-    setTimeout(() => {
-      Quagga.start();
-    }, 100); // Add a small delay to ensure it starts cleanly
-
-    // Restart QR code scanning
-    const video = document.querySelector("video");
-    if (video && video.srcObject) {
-      const stream = video.srcObject;
-      const tracks = stream.getTracks();
-      tracks.forEach((track) => track.stop()); // Stop the video stream
-    }
-
-    // Reinitialize the QR scanner
-    this.initQrScanner();
-
-    // Reset scanned result
-    this.scannedResult = ""; // Clear scanned result
-  },
-},
-
-  };
-</script>
-
-<style>
-#scanner-container {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-}
-video {
-  width: 100%;
-  height: 100%;
-  object-fit: cover; /* ครอบคลุมพื้นที่หน้าจอ */
-}
-</style>
+  </template>
+ <script>
+ import QrScanner from "qr-scanner"; // ใช้ library QR Scanner
+ 
+ export default {
+   data() {
+     return {
+       scannedItems: [], // รายการสินค้าที่สแกน
+       mockData: [
+         { id: 1, name: "สินค้า A", stock: 10 },
+         { id: 2, name: "สินค้า B", stock: 20 },
+         { id: 3, name: "สินค้า C", stock: 5 },
+       ], // Mock Data
+     };
+   },
+   methods: {
+     startScanner() {
+       // จำลองการสแกน QR Code (Mock แทนการใช้กล้อง)
+       setTimeout(() => {
+         const randomIndex = Math.floor(Math.random() * this.mockData.length);
+         const mockQRCode = JSON.stringify(this.mockData[randomIndex]);
+         this.processQRCode({ data: mockQRCode });
+       }, 1000); // ดีเลย์ 1 วินาทีเหมือนการสแกนจริง
+     },
+     processQRCode(result) {
+       // ตัวอย่างการจัดการ QR Code (decode เป็นข้อมูลสินค้า)
+       const decodedData = JSON.parse(result.data); // เช่น {"id":1, "name":"สินค้า A", "stock":10}
+       const existingItem = this.scannedItems.find(
+         (item) => item.name === decodedData.name
+       );
+ 
+       if (existingItem) {
+         existingItem.quantity += 1; // เพิ่มจำนวนถ้ามีสินค้าอยู่แล้ว
+       } else {
+         this.scannedItems.push({
+           ...decodedData,
+           quantity: 1,
+           status: decodedData.stock > 0 ? "available" : "unavailable",
+         });
+       }
+     },
+     reset() {
+       this.scannedItems = [];
+     },
+     confirm() {
+       console.log("ยืนยันข้อมูล:", this.scannedItems);
+       // ส่งข้อมูลไปยัง Backend หรือ API
+     },
+   },
+ };
+ </script>
+ 
+  

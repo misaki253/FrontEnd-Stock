@@ -1,5 +1,5 @@
 <template>
-  <header v-if="!isLoginPage,!isScanPage" class="fixed top-0 left-0 w-full z-10 bg-white">
+  <header v-if="!isScanPage" class="fixed top-0 left-0 w-full z-10 bg-white">
     <nav>
       <div class="grid grid-flow-col gap-4 p-4">
         <div class="flex justify-end">
@@ -20,7 +20,7 @@
 
   <div class="flex h-full">
     <aside
-      v-if="!isLoginPage"
+      v-if="!isScanPage"
       :class="[
         isSidebarOpen ? 'translate-x-0' : '-translate-x-full',
         'fixed z-30 w-60 h-full bg-gray-800 text-white transition-transform xl:translate-x-0',
@@ -137,9 +137,9 @@
               </li>
               <li>
                 <a
-                  href="#"
+                  href="/admin/print_qr"
                   class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700 hover:text-yellow-500">
-                  Invoice
+                  Print Barcode/QR
                 </a>
               </li>
             </ul>
@@ -169,14 +169,14 @@
     <main
       <div
       :class="[
-        !isLoginPage,!isScanPage ? 'block xl:ml-64 mt-20 mb-20' : 'block',
-        !isLoginPage,!isScanPage ? 'flex-1' : 'w-full',
+        !isScanPage ? 'block xl:ml-64 mt-20 mb-20' : 'block',
+        !isScanPage ? 'flex-1' : 'w-full',
       ]">
       <slot />
     </main>
 
     <footer
-      v-if="!isLoginPage ,!isScanPage" 
+      v-if="!isScanPage" 
       class="fixed bottom-0 left-0 w-full bg-white shadow-lg z-10 flex items-center justify-between px-4 py-2 xl:hidden">
       <nuxt-link to="/admin/homepage">
         <div class="flex flex-col items-center text-gray-500">
@@ -287,19 +287,19 @@
   </div>
 </template>
 
+<scrip ></scrip>
+
 <script>
 export default {
+  
   data() {
     return {
       isDropdownOpen: false,
-      isSidebarOpen: false, // State to control the sidebar visibility
+      isSidebarOpen: false,
     };
   },
   computed: {
-    isLoginPage() {
-      return this.$route.path === "/login";
-    },
-    isScanPage(){
+    isScanPage() {
       return this.$route.path === "/admin/scan"
     }
   },
@@ -313,6 +313,7 @@ export default {
     },
   },
 };
+
 </script>
 
 <style></style>

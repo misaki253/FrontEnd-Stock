@@ -12,4 +12,11 @@ export default defineNuxtConfig({
   pages: {
     '/': 'login',
   },
+    static: {
+      prefix: false 
+    }
+  
+
+  
 });
+

@@ -97,7 +97,7 @@
                       <div class="font-medium text-gray-900">
                         {{ products.pname }}
                       </div>
-                      <div class=" text-gray-500 text-sm sm:hidden">
+                      <div class="text-gray-500 text-sm sm:hidden">
                         {{ products.p_id }} {{ products.p_type }}
                       </div>
                     </div>
@@ -105,7 +105,8 @@
                   <td class="px-4 text-sm hidden sm:table-cell">
                     {{ products.p_id }}
                   </td>
-                  <td class="whitespace-nowrap text-sm px-4 hidden sm:table-cell">
+                  <td
+                    class="whitespace-nowrap text-sm px-4 hidden sm:table-cell">
                     {{ products.p_type }}
                   </td>
                   <td class="px-4 text-sm hidden sm:table-cell">
@@ -146,7 +147,7 @@
           </div>
           <div>
             <div
-              class="flex justify-between items-center mt-4 bg-white h-auto rounded-lg p-3 flex-col sm:flex-row ">
+              class="flex justify-between items-center mt-4 bg-white h-auto rounded-lg p-3 flex-col sm:flex-row">
               <div class="">
                 รายการที่ {{ startIndex + 1 }} ถึง {{ endIndex }} จากทั้งหมด
                 {{ products.length }} รายการ
@@ -197,6 +198,7 @@
 </template>
 
 <script>
+
 export default {
   data() {
     return {
@@ -286,24 +288,13 @@ export default {
       useApiData: false,
     };
   },
-  watch: {
-    products: {
-      handler(newProducts) {
-        this.selectAll = newProducts.every((product) => product.checked);
-      },
-      deep: true,
-    },
-  },
   computed: {
     paginatedProduct() {
       const start = (this.currentPage - 1) * this.perPage;
       const end = this.currentPage * this.perPage;
-      console.log(
-        `Start: ${start}, End: ${end}, Total: ${this.products.length}`
-      );
+      console.log(`Start: ${start}, End: ${end}, Total: ${this.products.length}`);
       return this.products.slice(start, end);
     },
-
     totalPages() {
       return Math.ceil(this.products.length / this.perPage);
     },
@@ -331,11 +322,11 @@ export default {
         this.currentPage = page;
       }
     },
-    navigateToPage() {
-      this.$router.push("/admin/addproduct");
+    navigateToAddproduct(){
+
     },
     navigateToDetail(product) {
-      this.$router.push(`/admin/productdetail/${product.p_id}`);
+      this.$router.push(`/admin/${product.p_id}`);
     },
     toggleAll() {
       this.products.forEach((product) => {
@@ -347,8 +338,8 @@ export default {
     if (this.useApiData) {
       await this.fetchPeopleFromApi();
     } else {
-      this.products = this.mockData;
-    }
+      this.products = this.mockData}
   },
 };
 </script>
+
