@@ -9,7 +9,7 @@
         <div class="mb-4">
           <label class="block text-gray-700">Username</label>
           <input
-            type="username"
+            type="text"
             v-model="users.username"
             class="w-full px-4 py-2 border rounded-md"
             placeholder="Enter your username" />
@@ -28,45 +28,48 @@
           Login
         </button>
       </form>
-
-      <form v-else @submit.prevent="Signup">
+      
+      <form v-else @submit.prevent="register">
         <div class="mb-4">
-          <label for="name" class="block text-gray-700">Name</label>
+          <label class="block text-gray-700">First Name</label>
           <input
             type="text"
-            v-model="users.uname"
+            v-model="registerData.firstname"
             class="w-full px-4 py-2 border rounded-md"
-            placeholder="Enter your name"
+            placeholder="Enter your first name"
             required />
         </div>
 
         <div class="mb-4">
-          <label for="username" class="block text-gray-700">Username</label>
+          <label class="block text-gray-700">Last Name</label>
           <input
-            type="username"
-            v-model="users.username"
+            type="text"
+            v-model="registerData.lastname"
+            class="w-full px-4 py-2 border rounded-md"
+            placeholder="Enter your last name"
+            required />
+        </div>
+
+        <div class="mb-4">
+          <label class="block text-gray-700">Username</label>
+          <input
+            type="text"
+            v-model="registerData.username"
             class="w-full px-4 py-2 border rounded-md"
             placeholder="Enter your username"
             required />
         </div>
+
         <div class="mb-4">
-          <label for="password" class="block text-gray-700">Password</label>
+          <label class="block text-gray-700">Password</label>
           <input
             type="password"
-            v-model="users.password"
+            v-model="registerData.password"
             class="w-full px-4 py-2 border rounded-md"
             placeholder="Enter your password"
             required />
         </div>
-        <div class="mb-4">
-          <label for="role" class="block text-gray-700">role</label>
-          <input
-            type="role"
-            v-model="users.role"
-            class="w-full px-4 py-2 border rounded-md"
-            placeholder="Enter your role"
-            required />
-        </div>
+
         <button
           type="submit"
           class="w-full bg-green-500 text-white py-2 rounded-md">
@@ -81,6 +84,9 @@
         </button>
       </p>
     </div>
+    <div v-if="errorMessage" class="text-red-500 text-center mt-2">
+  {{ errorMessage }}
+</div>
   </div>
 </template>
 
@@ -91,23 +97,42 @@ definePageMeta({
 </script>
 
 <script>
+import axios from "axios";
+
 export default {
   data() {
-    return {
-      isLogin: true,
-      users: {
-        uname: "",
-        username: "",
-        password: "",
-        role: "",
-      },
-    };
-  },
+  return {
+    isLogin: true,
+    users: {
+      username: "",
+      password: "",
+    },
+    registerData: {
+      username: "",
+      password: "",
+      firstname: "",
+      lastname: "",
+      role: "employee",
+    },
+    clearregisterData: {
+      username: "",
+      password: "",
+      firstname: "",
+      lastname: "",
+      role: "employee",
+    },
+    errorMessage: "",
+  };
+},
 
   methods: {
     Login() {
-      const existingUsers = JSON.parse(localStorage.getItem("users")) || [];
+      if (!this.users.username || !this.users.password) {
+        alert("กรุณากรอก username และ password");
+        return;
+      }
 
+      const existingUsers = JSON.parse(localStorage.getItem("users")) || [];
       const user = existingUsers.find(
         (u) =>
           u.username === this.users.username &&
@@ -115,39 +140,35 @@ export default {
       );
 
       if (user) {
-        console.log("Login successful for", user);
         alert("Login สำเร็จ");
-        window.location.href = "/admin/homepage";
+        this.$router.push("/admin/homepage");
       } else {
-        console.log("Invalid username or password");
-        alert("login ไม่สำเร็จ");
+        alert("Login ไม่สำเร็จ");
       }
     },
 
-    Signup() {
-      let existingUsers = JSON.parse(localStorage.getItem("users")); // ดึงข้อมูลจาก localStorage
+    async register() {
+  try {
+    const { data } = await axios.post(
+      "http://localhost:3000/api/register",
+      this.registerData
+    );
+    if (data) {
+      this.$router.push("/login");
+      this.registerData = { ...this.clearregisterData };
+    }
+  } catch (error) {
+    console.log(error);
+    if (error.response && error.response.data) {
+      this.errorMessage = error.response.data.message || "เกิดข้อผิดพลาดในการลงทะเบียน";
+    }
+  }
+},
 
-      if (!Array.isArray(existingUsers)) {
-        existingUsers = [];
-      }
-
-      const newuser = {
-        ...this.users,
-        id: new Date().getTime(),
-      };
-
-      existingUsers.push(newuser);
-
-      localStorage.setItem("users", JSON.stringify(existingUsers));
-
-      console.log("Sign Up successful for", newuser);
-      alert("สมัครสมาชิกสำเร็จ");
-      this.isLogin = true;
-    },
   },
 };
 </script>
 
-<style>
+<style scoped>
 /* ใช้ Tailwind CSS */
 </style>
