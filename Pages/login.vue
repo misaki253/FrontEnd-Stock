@@ -5,22 +5,24 @@
         {{ isLogin ? "Login" : "Sign Up" }}
       </h2>
 
-      <form v-if="isLogin" @submit.prevent="Login">
+      <form v-if="isLogin" @submit.prevent="login">
         <div class="mb-4">
           <label class="block text-gray-700">Username</label>
           <input
             type="text"
-            v-model="users.username"
+            v-model="logindata.username"
             class="w-full px-4 py-2 border rounded-md"
-            placeholder="Enter your username" />
+            placeholder="Enter your username"
+            required />
         </div>
         <div class="mb-4">
           <label class="block text-gray-700">Password</label>
           <input
             type="password"
-            v-model="users.password"
+            v-model="logindata.password"
             class="w-full px-4 py-2 border rounded-md"
-            placeholder="Enter your password" />
+            placeholder="Enter your password"
+            required />
         </div>
         <button
           type="submit"
@@ -28,7 +30,7 @@
           Login
         </button>
       </form>
-      
+
       <form v-else @submit.prevent="register">
         <div class="mb-4">
           <label class="block text-gray-700">First Name</label>
@@ -84,9 +86,6 @@
         </button>
       </p>
     </div>
-    <div v-if="errorMessage" class="text-red-500 text-center mt-2">
-  {{ errorMessage }}
-</div>
   </div>
 </template>
 
@@ -98,73 +97,77 @@ definePageMeta({
 
 <script>
 import axios from "axios";
+import Cookies from "js-cookie";
 
 export default {
   data() {
-  return {
-    isLogin: true,
-    users: {
-      username: "",
-      password: "",
-    },
-    registerData: {
-      username: "",
-      password: "",
-      firstname: "",
-      lastname: "",
-      role: "employee",
-    },
-    clearregisterData: {
-      username: "",
-      password: "",
-      firstname: "",
-      lastname: "",
-      role: "employee",
-    },
-    errorMessage: "",
-  };
-},
+    return {
+      isLogin: true,
+      logindata: {
+        username: "",
+        password: "",
+      },
+      registerData: {
+        username: "",
+        password: "",
+        firstname: "",
+        lastname: "",
+        role: "employee",
+      },
+      clearregisterData: {
+        username: "",
+        password: "",
+        firstname: "",
+        lastname: "",
+        role: "employee",
+      },
+      errorMessage: "",
+    };
+  },
 
   methods: {
-    Login() {
-      if (!this.users.username || !this.users.password) {
-        alert("กรุณากรอก username และ password");
+    async login() {
+      if (!this.logindata.username || !this.logindata.password) {
+        alert("Please fill in both username and password.");
         return;
       }
+      console.log("Login data:", this.logindata); // ตรวจสอบค่าก่อนส่ง
+      try {
+        const { data } = await axios.post("https://project-stock.onrender.com/api/login", {
+          username: this.logindata.username,
+          password: this.logindata.password,
+        });
 
-      const existingUsers = JSON.parse(localStorage.getItem("users")) || [];
-      const user = existingUsers.find(
-        (u) =>
-          u.username === this.users.username &&
-          u.password === this.users.password
-      );
-
-      if (user) {
-        alert("Login สำเร็จ");
-        this.$router.push("/admin/homepage");
-      } else {
-        alert("Login ไม่สำเร็จ");
+        Cookies.set("token", data.token);
+        if (data.role === "admin") {
+          this.$router.push("/admin/homepage");
+        } else {
+          this.$router.push("/employee/homepage");
+        }
+      } catch (error) {
+        console.error("Login error:", error);
       }
     },
 
     async register() {
-  try {
-    const { data } = await axios.post(
-      "http://localhost:3000/api/register",
-      this.registerData
-    );
-    if (data) {
-      this.$router.push("/login");
-      this.registerData = { ...this.clearregisterData };
-    }
-  } catch (error) {
-    console.log(error);
-    if (error.response && error.response.data) {
-      this.errorMessage = error.response.data.message || "เกิดข้อผิดพลาดในการลงทะเบียน";
-    }
-  }
-},
-
+      console.log("Register data:", this.registerData); // ตรวจสอบค่าก่อนส่ง
+      try {
+        const { data } = await axios.post(
+          "https://project-stock.onrender.com/api/register",
+          this.registerData
+        );
+        if (data) {
+          this.$router.push("/login");
+          this.registerData = { ...this.clearregisterData };
+        }
+      } catch (error) {
+        console.error("Register error:", error);
+        if (error.response && error.response.data) {
+          this.errorMessage =
+            error.response.data.message || "เกิดข้อผิดพลาดในการลงทะเบียน";
+        }
+      }
+    },
   },
 };
 </script>

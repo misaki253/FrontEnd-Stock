@@ -25,7 +25,7 @@
         isSidebarOpen ? 'translate-x-0' : '-translate-x-full',
         'fixed z-30 w-60 h-full bg-gray-800 text-white transition-transform xl:translate-x-0',
       ]"
-      :aria-hidden="!isSidebarOpen">
+      ">
       <div class="p-5 h-14">
         <button
           @click="toggleSidebar"
@@ -148,7 +148,7 @@
       </nav>
 
       <footer class="p-5">
-        <NuxtLink to="/login" class="flex">
+        <div @click="logout">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -162,7 +162,7 @@
               d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3H15" />
           </svg>
           <span class="ml-2">Logout</span>
-        </NuxtLink>
+        </div>
       </footer>
     </aside>
 
@@ -290,6 +290,8 @@
 <scrip ></scrip>
 
 <script>
+import Cookies from 'js-cookie';
+
 export default {
   
   data() {
@@ -310,6 +312,11 @@ export default {
     },
     toggleDropdown() {
       this.isDropdownOpen = !this.isDropdownOpen;
+    },
+    logout() {
+      Cookies.remove("token");
+  
+      this.$router.push("/login");
     },
   },
 };

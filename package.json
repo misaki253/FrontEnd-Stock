@@ -13,6 +13,7 @@
     "@nuxt/http": "^0.6.4",
     "@nuxtjs/axios": "^5.13.6",
     "axios": "^1.7.9",
+    "js-cookie": "^3.0.5",
     "jsbarcode": "^3.11.6",
     "nuxt": "^3.14.1592",
     "qr-scanner": "^1.4.2",
@@ -29,6 +30,6 @@
     "autoprefixer": "^10.4.20",
     "daisyui": "^4.12.14",
     "postcss": "^8.4.49",
-    "tailwindcss": "^3.4.15"
+    "tailwindcss": "^3.4.17"
   }
 }

@@ -8,7 +8,7 @@
         </div>
         <div class="sm:ml-16 sm:flex-none">
           <button
-            @click="navigateToPage"
+            @click="navigateToAddproduct"
             type="button"
             class="block rounded-full bg-black px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-gray-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
             +
@@ -198,6 +198,8 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 
 export default {
   data() {
@@ -309,21 +311,24 @@ export default {
     },
   },
   methods: {
-    async fetchPeopleFromApi() {
+    async fetchProduct(){
       try {
-        const response = await this.$axios.get("/api/products");
-        this.products = response.data;
-      } catch (error) {
-        console.error("Failed to fetch data from API", error);
-      }
+      const response = await axios.get('http:localhots:3000/api/product');
+      this.products
+
+    } catch (error){
+      console.error(error);
+    }
     },
+
+
     goToPage(page) {
       if (page >= 1 && page <= this.totalPages) {
         this.currentPage = page;
       }
     },
     navigateToAddproduct(){
-
+      this.$router.push("/admin/addproduct")
     },
     navigateToDetail(product) {
       this.$router.push(`/admin/${product.p_id}`);

@@ -12,9 +12,6 @@ export default defineNuxtConfig({
   pages: {
     "/": "login",
   },
-  static: {
-    prefix: false,
-  },
   devServer: {
     port: 8080, 
   },
