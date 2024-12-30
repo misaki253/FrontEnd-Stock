@@ -133,10 +133,14 @@ export default {
       }
       console.log("Login data:", this.logindata); // ตรวจสอบค่าก่อนส่ง
       try {
-        const { data } = await axios.post("https://project-stock.onrender.com/api/login", {
-          username: this.logindata.username,
-          password: this.logindata.password,
-        });
+        const { data } = await axios.post(
+          "https://project-stock.onrender.com/api/login",
+          // "http://localhost:3000/api/login",
+          {
+            username: this.logindata.username,
+            password: this.logindata.password,
+          }
+        );
 
         Cookies.set("token", data.token);
         if (data.role === "admin") {
@@ -154,6 +158,7 @@ export default {
       try {
         const { data } = await axios.post(
           "https://project-stock.onrender.com/api/register",
+          // "https://localhost:3000/api/register",
           this.registerData
         );
         if (data) {

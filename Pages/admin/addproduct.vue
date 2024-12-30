@@ -53,6 +53,21 @@
             </div>
           </div>
         </div>
+        <div>
+          <label for="productPicture" class="block">เพิ่มรูปภาพสินค้า</label>
+          <input
+            type="file"
+            id="productPicture"
+            @change="handleImageUpload"
+            class="border rounded w-full p-1"
+            accept="image/*" />
+          <div v-if="previewImage" class="mt-3">
+            <img
+              :src="previewImage"
+              alt="Product Preview"
+              class="w-32 h-32 object-cover" />
+          </div>
+        </div>
       </div>
       <div class="flex justify-center mt-20 gap-20">
         <button
@@ -81,7 +96,9 @@ export default {
         productName: "",
         productType: "",
         productTotal: "",
+        productPicture : null,
       },
+      previewImage: null,
       productType: [],
       newType: "",
       isAddingNewType: false,
@@ -92,6 +109,13 @@ export default {
     this.fetchProductTypes();
   },
   methods: {
+    handleImageUpload(event) {
+      const file = event.target.files[0];
+      if (file) {
+        this.postdata.productPicture = file; 
+        this.previewImage = URL.createObjectURL(file); 
+      }
+    },
     navigateToPage() {
       this.$router.push("/admin/product");
     },
@@ -120,7 +144,8 @@ export default {
       if (
         !this.postdata.productName ||
         !this.postdata.productType ||
-        !this.postdata.productTotal
+        !this.postdata.productTotal ||
+        !this.postdata.productPicture
       ) {
         alert("กรุณากรอกข้อมูลให้ครบถ้วน");
         return;
@@ -151,7 +176,8 @@ export default {
         if (
           !this.postdata.productName ||
           !this.postdata.productType ||
-          !this.postdata.productTotal
+          !this.postdata.productTotal ||
+          !this.postdata.productPicture
         ) {
           alert("กรุณากรอกข้อมูลให้ครบถ้วน");
           return;
