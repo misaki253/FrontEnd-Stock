@@ -10,15 +10,27 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@nuxt/http": "^0.6.4",
+    "@nuxtjs/axios": "^5.13.6",
+    "axios": "^1.7.9",
+    "js-cookie": "^3.0.5",
+    "jsbarcode": "^3.11.6",
+    "jspdf": "^2.5.2",
     "nuxt": "^3.14.1592",
+    "qr-scanner": "^1.4.2",
+    "qrcode": "^1.5.4",
+    "quagga": "^0.12.1",
     "vite": "^6.0.1",
     "vue": "latest",
-    "vue-router": "latest"
+    "vue-qr-reader": "^1.6.2",
+    "vue-qrcode-reader": "^5.5.11",
+    "vue-router": "latest",
+    "vue-upload-component": "^2.8.23"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.20",
     "daisyui": "^4.12.14",
     "postcss": "^8.4.49",
-    "tailwindcss": "^3.4.15"
+    "tailwindcss": "^3.4.17"
   }
 }
