@@ -25,7 +25,7 @@
         isSidebarOpen ? 'translate-x-0' : '-translate-x-full',
         'fixed z-30 w-60 h-full bg-gray-800 text-white transition-transform xl:translate-x-0',
       ]"
-      ">
+      >
       <div class="p-5 h-14">
         <button
           @click="toggleSidebar"
@@ -167,7 +167,7 @@
     </aside>
 
     <main
-      <div
+      
       :class="[
         !isScanPage ? 'block xl:ml-64 mt-20 mb-20' : 'block',
         !isScanPage ? 'flex-1' : 'w-full',
@@ -261,7 +261,7 @@
         </div>
       </nuxt-link>
 
-      <nuxt-link to="/admin/Setting">
+      <nuxt-link to="/admin/picking">
         <div class="flex flex-col items-center text-gray-500">
           <svg
             xmlns="http://www.w3.org/2000/svg"

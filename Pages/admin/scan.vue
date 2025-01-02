@@ -1,124 +1,140 @@
 <template>
-    <div class="flex flex-col h-screen">
-      <!-- Header -->
-      <header class="bg-blue-500 text-white p-4">
-        <h1 class="text-lg font-bold">สแกน QR Code สินค้า</h1>
-      </header>
-  
-      <!-- Body -->
-      <main class="flex flex-col flex-1 p-4 space-y-4">
-        <!-- Scan Area -->
-        <section class="bg-gray-100 p-4 rounded shadow flex items-center justify-center">
-          <div class="text-center">
-            <p class="text-sm text-gray-500">สแกน QR Code</p>
-            <div class="border-dashed border-4 border-gray-300 w-48 h-48"></div>
-            <button
-              class="bg-blue-500 text-white mt-4 px-4 py-2 rounded"
-              @click="startScanner"
-            >
-              เริ่มสแกน
-            </button>
-            <video ref="scanner" class="mt-4 hidden"></video>
-          </div>
-        </section>
-  
-        <!-- Product List -->
-        <section class="flex-1 overflow-y-auto">
-          <table class="min-w-full border-collapse border border-gray-300">
-            <thead>
-              <tr class="bg-gray-200 text-left">
-                <th class="border border-gray-300 px-4 py-2">สินค้า</th>
-                <th class="border border-gray-300 px-4 py-2">คงเหลือ</th>
-                <th class="border border-gray-300 px-4 py-2">จำนวนหัก</th>
-                <th class="border border-gray-300 px-4 py-2">สถานะ</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="(item, index) in scannedItems" :key="index">
-                <td class="border border-gray-300 px-4 py-2">{{ item.name }}</td>
-                <td class="border border-gray-300 px-4 py-2">{{ item.stock }}</td>
-                <td class="border border-gray-300 px-4 py-2">
-                  <input
-                    type="number"
-                    class="border px-2 py-1 w-16 text-center"
-                    v-model.number="item.quantity"
-                  />
-                </td>
-                <td
-                  class="border border-gray-300 px-4 py-2"
-                  :class="{
-                    'text-green-500': item.status === 'available',
-                    'text-red-500': item.status === 'unavailable'
-                  }"
-                >
-                  {{ item.status === 'available' ? 'พร้อมใช้งาน' : 'ไม่พร้อมใช้งาน' }}
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </section>
-      </main>
-  
-      <!-- Footer -->
-      <footer class="bg-gray-100 p-4 flex justify-end space-x-4">
-        <button class="bg-gray-500 text-white px-4 py-2 rounded" @click="reset">
-          รีเซ็ต
-        </button>
-        <button class="bg-blue-500 text-white px-4 py-2 rounded" @click="confirm">
-          ยืนยัน
-        </button>
-      </footer>
+  <div class="flex flex-col h-screen">
+    <!-- Header -->
+    <header class="flex bg-blue-500 text-white p-4">
+      <svg @click="goBack" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+        stroke="currentColor" class="size-6 mr-5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+      </svg>
+
+      <h1 class="text-lg font-bold">สแกน Barcode สินค้า</h1>
+    </header>
+
+    <div>
+      <div class="flex justify-center bg-blue-300">
+        <button class="p-5 bg-white">หักสินค้า</button>
+        <button class="p-5">เช็คสินค้า</button>
+      </div>
     </div>
-  </template>
- <script>
- import QrScanner from "qr-scanner"; // ใช้ library QR Scanner
- 
- export default {
-   data() {
-     return {
-       scannedItems: [], // รายการสินค้าที่สแกน
-       mockData: [
-         { id: 1, name: "สินค้า A", stock: 10 },
-         { id: 2, name: "สินค้า B", stock: 20 },
-         { id: 3, name: "สินค้า C", stock: 5 },
-       ], // Mock Data
-     };
-   },
-   methods: {
-     startScanner() {
-       // จำลองการสแกน QR Code (Mock แทนการใช้กล้อง)
-       setTimeout(() => {
-         const randomIndex = Math.floor(Math.random() * this.mockData.length);
-         const mockQRCode = JSON.stringify(this.mockData[randomIndex]);
-         this.processQRCode({ data: mockQRCode });
-       }, 1000); // ดีเลย์ 1 วินาทีเหมือนการสแกนจริง
-     },
-     processQRCode(result) {
-       // ตัวอย่างการจัดการ QR Code (decode เป็นข้อมูลสินค้า)
-       const decodedData = JSON.parse(result.data); // เช่น {"id":1, "name":"สินค้า A", "stock":10}
-       const existingItem = this.scannedItems.find(
-         (item) => item.name === decodedData.name
-       );
- 
-       if (existingItem) {
-         existingItem.quantity += 1; // เพิ่มจำนวนถ้ามีสินค้าอยู่แล้ว
-       } else {
-         this.scannedItems.push({
-           ...decodedData,
-           quantity: 1,
-           status: decodedData.stock > 0 ? "available" : "unavailable",
-         });
-       }
-     },
-     reset() {
-       this.scannedItems = [];
-     },
-     confirm() {
-       console.log("ยืนยันข้อมูล:", this.scannedItems);
-       // ส่งข้อมูลไปยัง Backend หรือ API
-     },
-   },
- };
- </script>
- 
-  
+
+    <div class="justify-center h-full relative">
+      <section class="w-full h-full">
+        <!-- แสดงกล้อง -->
+        <video ref="scanner" class="w-full h-full object-cover"></video>
+      </section>
+    </div>
+
+    <div v-if="barcodeData" class="fixed bottom-0 left-0 w-full bg-green-500 text-white text-center p-4">
+      <p>สแกนบาร์โค้ดสำเร็จ: {{ barcodeData }}</p>
+    </div>
+  </div>
+</template>
+
+<script>
+import Quagga from "quagga"; // นำเข้า QuaggaJS
+import axios from "axios"; // นำเข้า Axios สำหรับเรียก API
+
+export default {
+  data() {
+    return {
+      videoStream: null, // เก็บข้อมูลการสตรีมของกล้อง
+      barcodeData: null,  // เก็บข้อมูลที่ได้จากบาร์โค้ด
+    };
+  },
+  methods: {
+    goBack() {
+      if (this.$router && this.$route) {
+        if (window.history.length > 1) {
+          this.$router.back();
+        } else {
+          this.$router.push("/");
+        }
+      } else {
+        console.error("Vue Router ไม่พร้อมใช้งาน");
+      }
+    },
+
+    startCamera() {
+      const constraints = {
+        video: true, // เปิดกล้อง
+      };
+      navigator.mediaDevices
+        .getUserMedia(constraints)
+        .then((stream) => {
+          this.videoStream = stream;
+          const videoElement = this.$refs.scanner;
+          videoElement.srcObject = stream; // ตั้งค่า stream ให้กับ video
+          videoElement.play(); // เริ่มเล่น
+          videoElement.classList.remove("hidden");
+
+          // เริ่มการตรวจจับบาร์โค้ด
+          this.scanBarcode(videoElement);
+        })
+        .catch((error) => {
+          console.error("ไม่สามารถเปิดกล้องได้:", error);
+        });
+    },
+
+    scanBarcode(videoElement) {
+      Quagga.init(
+        {
+          inputStream: {
+            type: "LiveStream",
+            target: videoElement, // ตั้งค่าให้ Quagga ใช้ video element
+          },
+          decoder: {
+            readers: ["code_128_reader", "ean_reader", "ean_8_reader", "upc_reader", "upc_e_reader"], // สามารถเพิ่มรูปแบบบาร์โค้ดที่ต้องการ
+          },
+        },
+        (err) => {
+          if (err) {
+            console.error("ไม่สามารถเริ่ม Quagga ได้:", err);
+            return;
+          }
+          Quagga.start(); // เริ่มการสแกน
+        }
+      );
+
+      // ฟังก์ชันที่จะถูกเรียกเมื่อ Quagga สแกนบาร์โค้ดสำเร็จ
+      Quagga.onDetected((data) => {
+        if (data && data.codeResult && data.codeResult.code) {
+          this.barcodeData = data.codeResult.code; // เก็บข้อมูลบาร์โค้ดที่ได้
+          console.log("บาร์โค้ดที่สแกน:", data.codeResult.code);
+          Quagga.stop(); // หยุดการสแกนหลังจากเจอครั้งแรก
+          this.handleBarcode(data.codeResult.code); // ส่งข้อมูลบาร์โค้ดไปยังฟังก์ชันที่ต้องการ
+        }
+      });
+    },
+
+    async handleBarcode(barcode) {
+      try {
+        // ตัวอย่างการส่งข้อมูลสินค้าไปยัง API scanner
+        const response = await axios.post('https://project-stock.onrender.com/api/products/products', {
+          products: [
+            {
+              productId: barcode,  // ใส่รหัสสินค้าที่ได้จากการสแกน
+              productTotal: 1,      // จำนวนที่ต้องการหัก
+            }
+          ]
+        });
+
+        // ถ้าสินค้าอัพเดตสำเร็จ
+        console.log(response.data.message);
+        this.$router.push("/admin/picking");  // ส่งไปที่หน้า /admin/picking
+      } catch (error) {
+        console.error('Error handling barcode:', error);
+        // จัดการข้อผิดพลาดที่เกิดขึ้น
+      }
+    },
+  },
+  mounted() {
+    this.startCamera();
+  },
+  beforeDestroy() {
+    if (this.videoStream) {
+      this.videoStream.getTracks().forEach((track) => track.stop());
+    }
+    Quagga.stop(); // หยุด Quagga เมื่อออกจากหน้านี้
+  },
+};
+</script>

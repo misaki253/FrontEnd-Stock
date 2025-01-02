@@ -22,6 +22,7 @@
     "quagga": "^0.12.1",
     "vite": "^6.0.1",
     "vue": "latest",
+    "vue-barcode-scanner": "^0.8.1",
     "vue-qr-reader": "^1.6.2",
     "vue-qrcode-reader": "^5.5.11",
     "vue-router": "latest",
