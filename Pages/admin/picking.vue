@@ -51,38 +51,18 @@
   import axios from 'axios';
   
   const scannedProducts = ref([]);  // เก็บข้อมูลสินค้าที่สแกนแล้ว
-  const scannedProductNos = ref([]);  // เก็บข้อมูล productNo ที่สแกน
   
   // ฟังก์ชันดึงข้อมูลสินค้าที่สแกนแล้ว
   const fetchScannedProducts = async () => {
     try {
       // ดึงข้อมูลสินค้า (ปรับ URL ให้ตรงกับ API ที่ส่งข้อมูลสินค้า)
       const response = await axios.post("https://project-stock.onrender.com/api/products/products");
-      console.log('API response:', response.data);  // ตรวจสอบข้อมูลที่ได้รับ
-  
       const allProducts = response.data.data;
-      console.log('All Products:', allProducts);  // ตรวจสอบข้อมูลสินค้า
   
-      // ตรวจสอบว่า scannedProductNos มีข้อมูลหรือไม่
-      console.log('Scanned Product Nos:', scannedProductNos.value);
-  
-      // กรองสินค้าที่มี productNo ตรงกับที่ถูกสแกน
-      scannedProducts.value = allProducts.filter(product => 
-        scannedProductNos.value.includes(product.productNo));  // กรองสินค้าที่มี productNo ตรง
-  
-      console.log('Scanned Products:', scannedProducts.value);  // ตรวจสอบสินค้าที่ถูกกรอง
-  
+      // กรองสินค้าที่มีการสแกนแล้ว (ปรับเงื่อนไขกรองตามที่ต้องการ)
+      scannedProducts.value = allProducts.filter(product => product.scanned);  // กรองสินค้าที่มีค่า `scanned` เป็น true หรือที่คุณต้องการ
     } catch (error) {
       console.error('Error fetching scanned products:', error);
-    }
-  };
-  
-  // ฟังก์ชันที่รับค่า productNo จากการสแกน
-  const addScannedProductNo = (productNo) => {
-    // ใช้ .value เพื่อเพิ่มข้อมูลเข้าไปใน scannedProductNos
-    if (!scannedProductNos.value.includes(productNo)) {
-      scannedProductNos.value.push(productNo);  // เพิ่ม productNo ที่สแกน
-      console.log('Added scanned productNo:', productNo);  // ตรวจสอบค่าที่เพิ่มเข้าไป
     }
   };
   
@@ -95,7 +75,6 @@
     fetchScannedProducts();  // เรียกใช้ฟังก์ชันหลังจาก component ถูกโหลด
   });
   
-  // เมื่อกลับไปหน้าก่อนหน้า
   const goBack = () => {
     if (this.$router && this.$route) {
       if (window.history.length > 1) {

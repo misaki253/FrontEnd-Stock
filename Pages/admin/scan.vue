@@ -24,8 +24,14 @@
       </section>
     </div>
 
-    <div v-if="barcodeData" class="fixed bottom-0 left-0 w-full bg-green-500 text-white text-center p-4">
-      <p>สแกนบาร์โค้ดสำเร็จ: {{ barcodeData }}</p>
+    <div v-if="foundProduct" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+      <div class="bg-white p-5 rounded-lg max-w-md w-full">
+        <h3 class="text-xl font-bold mb-4">ข้อมูลสินค้า</h3>
+        <p><strong>ชื่อสินค้า:</strong> {{ foundProduct.productName }}</p>
+        <p><strong>รหัสสินค้า:</strong> {{ foundProduct.productNo }}</p>
+        <p><strong>จำนวนคงเหลือ:</strong> {{ foundProduct.productTotal }}</p>
+        <button @click="closeModal" class="mt-4 w-full bg-blue-500 text-white py-2 rounded-md">ปิด</button>
+      </div>
     </div>
   </div>
 </template>
@@ -39,6 +45,8 @@ export default {
     return {
       videoStream: null, // เก็บข้อมูลการสตรีมของกล้อง
       barcodeData: null,  // เก็บข้อมูลที่ได้จากบาร์โค้ด
+      productInfo: null,
+      foundProduct: null
     };
   },
   methods: {
@@ -108,24 +116,59 @@ export default {
 
     async handleBarcode(barcode) {
       try {
-        // ตัวอย่างการส่งข้อมูลสินค้าไปยัง API scanner
+        // ส่งคำขอ GET ไปยัง API เพื่อตรวจสอบสินค้าที่ตรงกับ barcode
         const response = await axios.post('https://project-stock.onrender.com/api/products/products', {
-          products: [
-            {
-              productId: barcode,  // ใส่รหัสสินค้าที่ได้จากการสแกน
-              productTotal: 1,      // จำนวนที่ต้องการหัก
-            }
-          ]
+          params: { productNo: [barcode] }  // ส่ง barcode เป็น query parameter
         });
 
-        // ถ้าสินค้าอัพเดตสำเร็จ
-        console.log(response.data.message);
-        this.$router.push("/admin/picking");  // ส่งไปที่หน้า /admin/picking
+        if (response.status === 200 && response.data) {
+          const products = response.data.data;  // ข้อมูลสินค้าในระบบ
+          const product = products.find(p => p.productNo === barcode);  // ค้นหาสินค้าตาม barcode
+
+          if (product) {
+            console.log('พบสินค้าที่ตรงกับบาร์โค้ด:', product);
+            // this.addProductToUpdate(product); // เพิ่มสินค้าลงใน array
+            this.foundProduct = product;
+          } else {
+            console.error('ไม่พบสินค้าที่ตรงกับบาร์โค้ด');
+          }
+        } else {
+          console.error('เกิดข้อผิดพลาดในการดึงข้อมูลสินค้า');
+        }
       } catch (error) {
-        console.error('Error handling barcode:', error);
-        // จัดการข้อผิดพลาดที่เกิดขึ้น
+        console.error('เกิดข้อผิดพลาดในการตรวจสอบสินค้า:', error);
       }
     },
+    // async proceedToDeduct() {
+    //   if (this.productsToUpdate.length > 0) {
+    //     try {
+    //       const response = await axios.post('https://project-stock.onrender.com/api/products/scanner', {
+    //         products: this.productsToUpdate, // ส่ง array ของสินค้า
+    //       });
+
+    //       if (response.status === 200) {
+    //         console.log(response.data.message); // แสดงข้อความที่ได้รับจาก API
+
+    //         // ส่งข้อมูลสินค้าที่หักไปยังหน้า /admin/picking
+    //         this.$router.push({
+    //           path: '/admin/picking',
+    //           state: { products: this.productsToUpdate }
+    //         });
+    //       } else {
+    //         console.error('ไม่สามารถอัปเดตสินค้า');
+    //       }
+    //     } catch (error) {
+    //       console.error('เกิดข้อผิดพลาดในการอัปเดตสินค้า:', error);
+    //     }
+    //   } else {
+    //     console.error("ไม่มีสินค้าที่จะหัก");
+    //   }
+    // },
+
+    closeModal() {
+      this.foundProduct = null; // ปิดโมเดล
+    },
+
   },
   mounted() {
     this.startCamera();
