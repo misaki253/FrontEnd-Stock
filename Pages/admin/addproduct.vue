@@ -80,7 +80,7 @@ export default {
         productName: "",
         productType: "",
         productTotal: "",
-        productPicture: null,
+        picture: null,
       },
       previewImage: null,
       productType: [],
