@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col h-screen">
     <!-- Header -->
-    <header class="flex bg-blue-500 text-white p-4">
+    <header class="flex bg-black text-white px-4 py-7">
       <svg @click="goBack" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
         stroke="currentColor" class="size-6 mr-5">
         <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
@@ -10,10 +10,18 @@
       <h1 class="text-lg font-bold">สแกน Barcode สินค้า</h1>
     </header>
 
-    <div>
-      <div class="flex justify-center bg-blue-300">
-        <button class="p-5 bg-white">หักสินค้า</button>
-        <button class="p-5">เช็คสินค้า</button>
+    <div class=" ">
+      <div class="bg-black text-white grid grid-cols-2 min-w-full ">
+        <button @click="setScanMode('deduct')"
+          :class="{ 'bg-yellow-500 text-black': scanMode === 'deduct', 'bg-transparent': scanMode !== 'deduct' }"
+          class="py-2 text-center">
+          หักสินค้า
+        </button>
+        <button @click="setScanMode('check')"
+          :class="{ 'bg-yellow-500 text-black': scanMode === 'check', 'bg-transparent': scanMode !== 'check' }"
+          class="text-center">
+          เช็คสินค้า
+        </button>
       </div>
     </div>
 
@@ -24,14 +32,21 @@
       </section>
     </div>
 
-    <div v-if="foundProduct" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+    <div v-if="foundProduct && scanMode === 'check'"
+      class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
       <div class="bg-white p-5 rounded-lg max-w-md w-full">
         <h3 class="text-xl font-bold mb-4">ข้อมูลสินค้า</h3>
+        <img :src="'http://erpstock.servehttp.com:9090/images/' + foundProduct.productPicture" alt="Product Image"
+          class="w-full h-auto rounded-md mb-4">
+
         <p><strong>ชื่อสินค้า:</strong> {{ foundProduct.productName }}</p>
-        <p><strong>รหัสสินค้า:</strong> {{ foundProduct.productNo }}</p>
         <p><strong>จำนวนคงเหลือ:</strong> {{ foundProduct.productTotal }}</p>
         <button @click="closeModal" class="mt-4 w-full bg-blue-500 text-white py-2 rounded-md">ปิด</button>
       </div>
+    </div>
+
+    <div class="flex justify-center items-center h-10 bg-black text-white">
+      วาง Barcode ให้อยู่ในตำแหน่ง
     </div>
   </div>
 </template>
@@ -39,14 +54,16 @@
 <script>
 import Quagga from "quagga"; // นำเข้า QuaggaJS
 import axios from "axios"; // นำเข้า Axios สำหรับเรียก API
-
+import jsQR from "jsqr";
 export default {
   data() {
     return {
-      videoStream: null, // เก็บข้อมูลการสตรีมของกล้อง
-      barcodeData: null,  // เก็บข้อมูลที่ได้จากบาร์โค้ด
+      videoStream: null,
+      barcodeData: null,
       productInfo: null,
-      foundProduct: null
+      foundProduct: null,
+      scanMode: 'deduct',
+      pickingList: [],
     };
   },
   methods: {
@@ -60,6 +77,11 @@ export default {
       } else {
         console.error("Vue Router ไม่พร้อมใช้งาน");
       }
+    },
+
+    setScanMode(mode) {
+      this.scanMode = mode; // กำหนดโหมดการสแกน
+      this.startCamera(); // เริ่มการสแกนใหม่ทุกครั้งที่เปลี่ยนโหมด
     },
 
     startCamera() {
@@ -84,51 +106,85 @@ export default {
     },
 
     scanBarcode(videoElement) {
+      // Initialize Quagga for barcode scanning
       Quagga.init(
         {
           inputStream: {
             type: "LiveStream",
-            target: videoElement, // ตั้งค่าให้ Quagga ใช้ video element
+            target: videoElement,
           },
           decoder: {
-            readers: ["code_128_reader", "ean_reader", "ean_8_reader", "upc_reader", "upc_e_reader"], // สามารถเพิ่มรูปแบบบาร์โค้ดที่ต้องการ
+            readers: ["code_128_reader", "ean_reader", "ean_8_reader", "upc_reader", "upc_e_reader"],
           },
         },
         (err) => {
           if (err) {
-            console.error("ไม่สามารถเริ่ม Quagga ได้:", err);
+            console.error("Unable to initialize Quagga:", err);
             return;
           }
-          Quagga.start(); // เริ่มการสแกน
+          Quagga.start();
         }
       );
 
-      // ฟังก์ชันที่จะถูกเรียกเมื่อ Quagga สแกนบาร์โค้ดสำเร็จ
+
       Quagga.onDetected((data) => {
         if (data && data.codeResult && data.codeResult.code) {
-          this.barcodeData = data.codeResult.code; // เก็บข้อมูลบาร์โค้ดที่ได้
-          console.log("บาร์โค้ดที่สแกน:", data.codeResult.code);
-          Quagga.stop(); // หยุดการสแกนหลังจากเจอครั้งแรก
-          this.handleBarcode(data.codeResult.code); // ส่งข้อมูลบาร์โค้ดไปยังฟังก์ชันที่ต้องการ
+          this.barcodeData = data.codeResult.code;
+          console.log("Scanned barcode:", data.codeResult.code);
+          Quagga.stop();
+          this.handleBarcode(data.codeResult.code);
         }
       });
+
+
+      const canvasElement = document.createElement("canvas");
+      const canvasContext = canvasElement.getContext("2d");
+
+      const scanQRCode = () => {
+        const videoWidth = videoElement.videoWidth;
+        const videoHeight = videoElement.videoHeight;
+
+
+        if (videoWidth === 0 || videoHeight === 0) {
+          return requestAnimationFrame(scanQRCode);
+        }
+
+        canvasElement.width = videoWidth;
+        canvasElement.height = videoHeight;
+        canvasContext.drawImage(videoElement, 0, 0, videoWidth, videoHeight);
+
+        const imageData = canvasContext.getImageData(0, 0, videoWidth, videoHeight);
+        const code = jsQR(imageData.data, videoWidth, videoHeight);
+
+        if (code) {
+          console.log("Scanned QR code:", code.data);
+          this.handleBarcode(code.data);
+        }
+
+        requestAnimationFrame(scanQRCode); // Continue scanning for QR codes
+      };
+
+      scanQRCode();
     },
 
     async handleBarcode(barcode) {
       try {
-        // ส่งคำขอ GET ไปยัง API เพื่อตรวจสอบสินค้าที่ตรงกับ barcode
-        const response = await axios.post('https://project-stock.onrender.com/api/products/products', {
-          params: { productNo: [barcode] }  // ส่ง barcode เป็น query parameter
+        const response = await axios.post('http://erpstock.servehttp.com:9090/api/products/products', {
+          search: barcode,
         });
 
         if (response.status === 200 && response.data) {
-          const products = response.data.data;  // ข้อมูลสินค้าในระบบ
-          const product = products.find(p => p.productNo === barcode);  // ค้นหาสินค้าตาม barcode
+          const products = response.data.data;
+          const product = products.find((p) => p.productNo === barcode);
 
           if (product) {
-            console.log('พบสินค้าที่ตรงกับบาร์โค้ด:', product);
-            // this.addProductToUpdate(product); // เพิ่มสินค้าลงใน array
-            this.foundProduct = product;
+            product.productPicture = product.productPicture || 'default-image.jpg';
+
+            if (this.scanMode === 'deduct') {
+              this.handleDeduct(product);
+            } else if (this.scanMode === 'check') {
+              this.foundProduct = product;
+            }
           } else {
             console.error('ไม่พบสินค้าที่ตรงกับบาร์โค้ด');
           }
@@ -139,36 +195,28 @@ export default {
         console.error('เกิดข้อผิดพลาดในการตรวจสอบสินค้า:', error);
       }
     },
-    // async proceedToDeduct() {
-    //   if (this.productsToUpdate.length > 0) {
-    //     try {
-    //       const response = await axios.post('https://project-stock.onrender.com/api/products/scanner', {
-    //         products: this.productsToUpdate, // ส่ง array ของสินค้า
-    //       });
 
-    //       if (response.status === 200) {
-    //         console.log(response.data.message); // แสดงข้อความที่ได้รับจาก API
+    handleDeduct(product) {
+      const storedPickingList = JSON.parse(localStorage.getItem('pickingList')) || [];
+      const existingProduct = storedPickingList.find((item) => item.productNo === product.productNo);
 
-    //         // ส่งข้อมูลสินค้าที่หักไปยังหน้า /admin/picking
-    //         this.$router.push({
-    //           path: '/admin/picking',
-    //           state: { products: this.productsToUpdate }
-    //         });
-    //       } else {
-    //         console.error('ไม่สามารถอัปเดตสินค้า');
-    //       }
-    //     } catch (error) {
-    //       console.error('เกิดข้อผิดพลาดในการอัปเดตสินค้า:', error);
-    //     }
-    //   } else {
-    //     console.error("ไม่มีสินค้าที่จะหัก");
-    //   }
-    // },
+      if (existingProduct) {
+        existingProduct.quantity += 1;
+      } else {
+        storedPickingList.push({ ...product, quantity: 1 });
+      }
+
+      localStorage.setItem('pickingList', JSON.stringify(storedPickingList));
+
+      console.log('อัปเดตข้อมูลสินค้าใน localStorage:', storedPickingList);
+
+      this.$router.push('/admin/picking');
+    },
+
 
     closeModal() {
       this.foundProduct = null; // ปิดโมเดล
     },
-
   },
   mounted() {
     this.startCamera();

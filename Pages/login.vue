@@ -128,7 +128,7 @@ export default {
       this.isLoading = true;
       try {
         const { data } = await axios.post(
-          "https://project-stock.onrender.com/api/login",
+          "http://erpstock.servehttp.com:9090/api/login",
           // "http://localhost:3000/api/login",
           {
             username: this.logindata.username,
@@ -151,7 +151,7 @@ export default {
       console.log("Register data:", this.registerData); // ตรวจสอบค่าก่อนส่ง
       try {
         const { data } = await axios.post(
-          "https://project-stock.onrender.com/api/register",
+          "http://erpstock.servehttp.com:9090/api/register",
           // "https://localhost:3000/api/register",
           this.registerData
         );
