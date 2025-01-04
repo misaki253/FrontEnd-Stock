@@ -64,6 +64,7 @@ export default {
       foundProduct: null,
       scanMode: 'deduct',
       pickingList: [],
+      isScanning: false, // เพิ่มตัวแปรนี้เพื่อตรวจสอบสถานะการสแกน
     };
   },
   methods: {
@@ -106,6 +107,11 @@ export default {
     },
 
     scanBarcode(videoElement) {
+      // ตรวจสอบว่าเป็นการสแกนแล้วหรือยัง
+      if (this.isScanning) return;
+
+      this.isScanning = true; // ตั้งสถานะเป็นกำลังสแกน
+
       // Initialize Quagga for barcode scanning
       Quagga.init(
         {
@@ -116,7 +122,7 @@ export default {
           decoder: {
             readers: ["code_128_reader", "ean_reader", "ean_8_reader", "upc_reader", "upc_e_reader"],
           },
-        },
+      },
         (err) => {
           if (err) {
             console.error("Unable to initialize Quagga:", err);
@@ -126,16 +132,16 @@ export default {
         }
       );
 
-
       Quagga.onDetected((data) => {
         if (data && data.codeResult && data.codeResult.code) {
           this.barcodeData = data.codeResult.code;
           console.log("Scanned barcode:", data.codeResult.code);
-          Quagga.stop();
+          Quagga.stop(); // หยุดการสแกนเมื่อพบบาร์โค้ด
+          this.isScanning = false; // ตั้งสถานะเป็นไม่สแกนแล้ว
           this.handleBarcode(data.codeResult.code);
+          return; // ออกจากฟังก์ชันเพื่อป้องกันการทำงานซ้ำ
         }
       });
-
 
       const canvasElement = document.createElement("canvas");
       const canvasContext = canvasElement.getContext("2d");
@@ -144,9 +150,8 @@ export default {
         const videoWidth = videoElement.videoWidth;
         const videoHeight = videoElement.videoHeight;
 
-
         if (videoWidth === 0 || videoHeight === 0) {
-          return requestAnimationFrame(scanQRCode);
+          return requestAnimationFrame(scanQRCode); // ถ้าไม่พบภาพที่ใช้งานได้ จะพยายามใหม่
         }
 
         canvasElement.width = videoWidth;
@@ -158,13 +163,15 @@ export default {
 
         if (code) {
           console.log("Scanned QR code:", code.data);
+          Quagga.stop(); // หยุดการสแกนเมื่อพบ QR code
+          this.isScanning = false; // ตั้งสถานะเป็นไม่สแกนแล้ว
           this.handleBarcode(code.data);
         }
 
-        requestAnimationFrame(scanQRCode); // Continue scanning for QR codes
+        requestAnimationFrame(scanQRCode); // สแกนใหม่หากไม่พบ QR code
       };
 
-      scanQRCode();
+      scanQRCode(); // เริ่มการสแกน QR code
     },
 
     async handleBarcode(barcode) {
@@ -213,7 +220,6 @@ export default {
       this.$router.push('/admin/picking');
     },
 
-
     closeModal() {
       this.foundProduct = null; // ปิดโมเดล
     },
@@ -225,7 +231,7 @@ export default {
     if (this.videoStream) {
       this.videoStream.getTracks().forEach((track) => track.stop());
     }
-    Quagga.stop(); // หยุด Quagga เมื่อออกจากหน้านี้
+    Quagga.stop();
   },
 };
 </script>

@@ -14,7 +14,7 @@
               <div v-if="previewImage" class="mt-3">
                 <img :src="previewImage" alt="Product Preview" class="w-32 h-32 object-cover" />
               </div>
-              <input type="file" id="productPicture" @change="handleImageUpload" class="border rounded w-full p-1"
+              <input type="file" id="picture" @change="handleImageUpload" class="border rounded w-full p-1"
                 accept="image/*" />
 
             </div>
@@ -49,7 +49,7 @@
               </div>
             </div>
 
-            
+
           </div>
         </div>
 
@@ -93,22 +93,29 @@ export default {
     this.fetchProductTypes();
   },
   methods: {
+
     handleImageUpload(event) {
       const file = event.target.files[0];
       if (file) {
-        this.postdata.productPicture = file;
+        this.postdata.picture = file;
         this.previewImage = URL.createObjectURL(file);
       }
     },
+
+
     navigateToPage() {
       this.$router.push("/admin/product");
     },
+
+
     handleProductTypeChange() {
       if (this.postdata.productType === "add-new") {
         this.isAddingNewType = true;
         this.postdata.productType = "";
       }
     },
+
+    
     async fetchProductTypes() {
       try {
         const response = await axios.get(
@@ -162,8 +169,8 @@ export default {
         if (
           !this.postdata.productName ||
           !this.postdata.productType ||
-          !this.postdata.productTotal
-          //|| !this.postdata.productPicture
+          !this.postdata.productTotal|| 
+          !this.postdata.picture
         ) {
           alert("กรุณากรอกข้อมูลให้ครบถ้วน");
           return;

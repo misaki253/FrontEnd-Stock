@@ -1,37 +1,31 @@
 <template>
   <div class="p-4 bg-white rounded-lg shadow-lg">
     <h1 class="text-3xl font-semibold mb-4">รายการสินค้า</h1>
-    <div class="mb-4 flex space-x-4">
-      <input v-model="filters.search" type="text" placeholder="ค้นหา" class="border p-2 rounded"
-        @input="fetchProducts" />
-      <select v-model="filters.productType" class="border p-2 rounded" @change="fetchProducts">
-        <option value="">ทุกประเภท</option>
-        <option v-for="type in productType" :key="type.id" :value="type.id">
-          {{ type.typeName }}
-        </option>
-      </select>
+    <div class="flex justify-between">
+      <div class="mb-4 flex space-x-4">
+        <input v-model="filters.search" type="text" placeholder="ค้นหา" class="border p-2 rounded"
+          @input="fetchProducts" />
+        <select v-model="filters.productType" class="border p-2 rounded" @change="fetchProducts">
+          <option value="">ทุกประเภท</option>
+          <option v-for="type in productType" :key="type.id" :value="type.id">
+            {{ type.typeName }}
+          </option>
+        </select>
+      </div>
+      <div class="">
+        <div class="">
+          <div @click="openModal" class="">
 
-      <div class="flex justify-end">
-        <div class="p-4">
-          <div @click="openModal">
-            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
-              <path fill="#169154" d="M29,6H15.744C14.781,6,14,6.781,14,7.744v7.259h15V6z"></path>
-              <path fill="#18482a" d="M14,33.054v7.202C14,41.219,14.781,42,15.743,42H29v-8.946H14z"></path>
-              <path fill="#0c8045" d="M14 15.003H29V24.005000000000003H14z"></path>
-              <path fill="#17472a" d="M14 24.005H29V33.055H14z"></path>
-              <g>
-                <path fill="#29c27f" d="M42.256,6H29v9.003h15V7.744C44,6.781,43.219,6,42.256,6z"></path>
-                <path fill="#27663f" d="M29,33.054V42h13.257C43.219,42,44,41.219,44,40.257v-7.202H29z"></path>
-                <path fill="#19ac65" d="M29 15.003H44V24.005000000000003H29z"></path>
-                <path fill="#129652" d="M29 24.005H44V33.055H29z"></path>
-              </g>
-              <path fill="#0c7238"
-                d="M22.319,34H5.681C4.753,34,4,33.247,4,32.319V15.681C4,14.753,4.753,14,5.681,14h16.638 C23.247,14,24,14.753,24,15.681v16.638C24,33.247,23.247,34,22.319,34z">
-              </path>
-              <path fill="#fff"
-                d="M9.807 19L12.193 19 14.129 22.754 16.175 19 18.404 19 15.333 24 18.474 29 16.123 29 14.013 25.07 11.912 29 9.526 29 12.719 23.982z">
-              </path>
-            </svg>
+            <button class="">
+              <svg class="w-6 h-6 text-gray-800 dark:text-black" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                <path fill-rule="evenodd"
+                  d="M9 7V2.221a2 2 0 0 0-.5.365L4.586 6.5a2 2 0 0 0-.365.5H9Zm2 0V2h7a2 2 0 0 1 2 2v9.293l-2-2a1 1 0 0 0-1.414 1.414l.293.293h-6.586a1 1 0 1 0 0 2h6.586l-.293.293A1 1 0 0 0 18 16.707l2-2V20a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V9h5a2 2 0 0 0 2-2Z"
+                  clip-rule="evenodd" />
+              </svg>
+
+              export
+            </button>
           </div>
 
           <!-- Modal -->
@@ -58,19 +52,16 @@
         </div>
 
         <div>
-          <svg @click="importProduct" xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 6.35 6.35">
-            <path
-              d="M4.497 0a.265.265 0 0 0-.264.263v1.06c0 .435.358.793.793.793h1.06a.265.265 0 0 0 0-.529h-1.06a.26.26 0 0 1-.263-.264V.263A.265.265 0 0 0 4.497 0Z"
-              color="#000"></path>
-            <path
-              d="M2.117 0a.798.798 0 0 0-.795.793V2.91a.265.265 0 0 0 .266.266.265.265 0 0 0 .264-.266V.793a.26.26 0 0 1 .265-.264H4.39L5.82 1.961v3.596a.26.26 0 0 1-.263.263h-3.44a.26.26 0 0 1-.265-.263v-.53a.265.265 0 0 0-.264-.265.265.265 0 0 0-.266.265v.53c0 .435.36.793.795.793h3.44a.796.796 0 0 0 .793-.793V1.852a.265.265 0 0 0-.077-.188L4.686.078A.265.265 0 0 0 4.498 0Z"
-              color="#000"></path>
-            <path d="M.264 4.234a.265.265 0 0 1 0-.529h3.175a.265.265 0 1 1 0 .53z" color="#000"></path>
-            <path
-              d="M2.723 2.988a.265.265 0 0 0 0 .373l.607.608-.607.607a.265.265 0 0 0 0 .373.265.265 0 0 0 .375 0l.793-.793a.265.265 0 0 0 0-.375l-.793-.793a.265.265 0 0 0-.375 0z"
-              color="#000" style="-inkscape-stroke:none"></path>
+          <svg class="w-6 h-6 text-gray-800 dark:text-black" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+            width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+            <path fill-rule="evenodd"
+              d="M9 7V2.221a2 2 0 0 0-.5.365L4.586 6.5a2 2 0 0 0-.365.5H9Zm2 0V2h7a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-5h7.586l-.293.293a1 1 0 0 0 1.414 1.414l2-2a1 1 0 0 0 0-1.414l-2-2a1 1 0 0 0-1.414 1.414l.293.293H4V9h5a2 2 0 0 0 2-2Z"
+              clip-rule="evenodd" />
           </svg>
-          <input type="file" @change="handleFileUpload" class="hidden" ref="fileInput" />
+
+
+          <input type="file" accept=".xlsx" @change="handleFileUpload" class="hidden" ref="fileInput" />
+
         </div>
       </div>
     </div>
@@ -108,6 +99,39 @@
 
 
     </table>
+
+
+    <div v-if="showProductModal" class="fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center z-50">
+      <div class="bg-white p-6 rounded shadow-lg w-96">
+        <h2 class="text-lg font-bold mb-4">ข้อมูลสินค้า</h2>
+
+        <!-- แสดงรายละเอียดสินค้า -->
+        <div class="mb-4">
+          <img
+            :src="selectedProduct.productPicture
+              ? 'https://project-stock.onrender.com/images/' + selectedProduct.productPicture
+              : 'https://lh3.googleusercontent.com/proxy/vfrcI3Ho8V8lLS1FWlXFKUAc9p85CQm9WxsUFwOm1zrLrYsStycX5NSOBJS4TYEEX5_3mQkd8QuqnIk'"
+            alt="ภาพสินค้า" class="w-16 h-16 object-cover mb-4" />
+          <p><strong>ชื่อสินค้า:</strong> {{ selectedProduct.productName }}</p>
+          <p><strong>รหัสสินค้า:</strong> {{ selectedProduct.productNo }}</p>
+          <p><strong>สต็อก:</strong> {{ selectedProduct.productTotal }}</p>
+          <p><strong>ประเภท:</strong> {{ getTypeName(selectedProduct.productType) }}</p>
+        </div>
+
+        <div class="flex justify-between mt-4">
+          <button @click="editProduct" class="bg-blue-500 text-white px-4 py-2 rounded">
+            แก้ไข
+          </button>
+          <button @click="deleteProduct" class="bg-red-500 text-white px-4 py-2 rounded">
+            ลบ
+          </button>
+          <button @click="closeProductModal" class="bg-gray-300 text-gray-700 px-4 py-2 rounded">
+            ปิด
+          </button>
+        </div>
+      </div>
+    </div>
+
 
     <div class="flex justify-between mt-5">
       <div class="flex  items-center">
@@ -166,6 +190,8 @@ export default {
       totalPages: 0,
       isLoading: false,
       showModal: false,
+      showProductModal: false, // เพิ่มตัวแปรสำหรับแสดง Modal
+      selectedProduct: null, // เพิ่มตัวแปรสำหรับเก็บข้อมูลสินค้าที่เลือก
       dataFrom: null,
       dataTo: null,
       filters: {
@@ -193,13 +219,22 @@ export default {
   },
   methods: {
     goToProductDetail(productId) {
-      console.log("Product ID:", productId);
-      this.$router.push(`/admin/${productId}`);
+      const product = this.products.find(p => p.productNo === productId);
+      if (product) {
+        this.selectedProduct = product;
+        this.showProductModal = true; // เปิด Modal
+      }
+    },
+
+    // ปิด Modal
+    closeProductModal() {
+      this.showProductModal = false;
+      this.selectedProduct = null; // รีเซ็ตข้อมูลสินค้า
     },
 
     async fetchProducts() {
       try {
-        // เคลียร์ข้อมูลสินค้าเดิม
+
         this.products = [];
 
         const response = await axios.post(
@@ -209,7 +244,6 @@ export default {
 
         const { data, totalCount } = response.data;
 
-        // กรองสินค้าที่มี productNo ซ้ำกันให้รวมกัน
         const uniqueProducts = data.reduce((acc, product) => {
           const existingProduct = acc.find(item => item.productNo === product.productNo);
 
@@ -285,6 +319,71 @@ export default {
         alert("การส่งออกข้อมูลล้มเหลว กรุณาลองใหม่");
       }
     },
+    importProduct() {
+      const fileInput = this.$refs.fileInput;
+      if (fileInput) {
+        fileInput.click();
+      }
+    },
+    handleFileUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const formData = new FormData();
+      formData.append("file", file);
+
+      axios.post("https://project-stock.onrender.com/api/products/import", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      })
+        .then(response => {
+          alert("Product data imported successfully!");
+          this.fetchProducts(); // Refresh the product list
+        })
+        .catch(error => {
+          console.error("Error importing products:", error);
+          alert("Failed to import products. Please try again.");
+        });
+    },
+
+
+
+    async deleteProduct() {
+      // ยืนยันการลบสินค้าจากชื่อสินค้า
+      if (confirm(`คุณต้องการลบสินค้า ${this.selectedProduct.productName} หรือไม่?`)) {
+        try {
+          // ลบสินค้าออกจากฐานข้อมูล
+          await this.removeProductFromDatabase(this.selectedProduct.productNo);
+
+          // หลังจากลบจากฐานข้อมูลสำเร็จ, ลบออกจาก products array
+          this.products = this.products.filter(p => p.productNo !== this.selectedProduct.productNo);
+
+          // ปิด Modal
+          this.closeProductModal();
+        } catch (error) {
+          // การจัดการข้อผิดพลาด
+          alert('ไม่สามารถลบสินค้าได้ กรุณาลองใหม่อีกครั้ง');
+          console.error("เกิดข้อผิดพลาดในการลบสินค้า:", error);
+        }
+      }
+    },
+
+    // ฟังก์ชันสำหรับลบสินค้าออกจากฐานข้อมูล (ใช้ API)
+    async removeProductFromDatabase(productNo) {
+      try {
+        const response = await axios.delete(`https://project-stock.onrender.com/api/products/${productNo}`);
+
+        if (response.status === 200) {
+          console.log('ลบสินค้าเรียบร้อย');
+        } else {
+          throw new Error(`การลบสินค้าไม่สำเร็จ: ${response.statusText}`);
+        }
+      } catch (error) {
+        // การจัดการข้อผิดพลาดในการส่งคำขอ
+        console.error('เกิดข้อผิดพลาดในการลบสินค้า:', error);
+        throw error; // ข้ามข้อผิดพลาดไปยังฟังก์ชันที่เรียกใช้
+      }
+    }
+    ,
 
 
     openModal() {

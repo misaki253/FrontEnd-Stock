@@ -17,20 +17,18 @@
                 </tr>
               </thead>
               <tbody class="divide-y divide-gray-700">
-                <tr
-                  v-for="history in mockData"
-                  :key="history.p_id"
+                <tr v-for="stockout in productstock" :key="stockout.productId"
                   class="divide-x divide-gray-700 bg-zinc-800 text-white">
-                  <td class="px-3 py-1.5 text-xs">{{ history.p_id }}</td>
+                  <td class="px-3 py-1.5 text-xs">{{ stockout.productNo }}</td>
                   <td class="px-3 truncate max-w-[200px] text-xs">
-                    {{ history.pname }}
+                    {{ stockout.productName }}
                   </td>
                   <td class="whitespace-pre px-3 text-xs">
-                    {{ history.p_type }}
+                    {{ stockout.productType }}
                   </td>
-                  <td class="px-3 text-xs">{{ history.quantity }}</td>
-                  <td class="px-3 text-xs">{{ history.date }}</td>
-                  <td class="px-3 text-xs">{{ history.employee }}</td>
+                  <td class="px-3 text-xs">{{ stockout.productTotal }}</td>
+                  <td class="px-3 text-xs"> {{ formatDate(stockout.createdDate) }}</td>
+                  <td class="px-3 text-xs">{{ stockout.employee }}</td>
                 </tr>
               </tbody>
             </table>
@@ -55,20 +53,18 @@
                 </tr>
               </thead>
               <tbody class="divide-y divide-gray-700">
-                <tr
-                  v-for="history in mockData"
-                  :key="history.p_id"
+                <tr v-for="product in products" :key="product.productId"
                   class="divide-x divide-gray-700 bg-zinc-800 text-white">
-                  <td class="px-3 py-1.5 text-xs">{{ history.p_id }}</td>
+                  <td class="px-3 py-1.5 text-xs">{{ product.productNo }}</td>
                   <td class="px-3 truncate max-w-[200px] text-xs">
-                    {{ history.pname }}
+                    {{ product.productName }}
                   </td>
                   <td class="whitespace-pre px-3 text-xs">
-                    {{ history.p_type }}
+                    {{ product.productType }}
                   </td>
-                  <td class="px-3 text-xs">{{ history.quantity }}</td>
-                  <td class="px-3 text-xs">{{ history.date }}</td>
-                  <td class="px-3 text-xs">{{ history.employee }}</td>
+                  <td class="px-3 text-xs">{{ product.productTotal }}</td>
+                  <td class="px-3 text-xs">{{ formatDate(product.createdDate, product.updatedDate) }}</td>
+                  <td class="px-3 text-xs">{{ product.employee }}</td>
                 </tr>
               </tbody>
             </table>
@@ -80,120 +76,92 @@
 </template>
 
 <script>
+import { data } from 'autoprefixer';
+import axios from 'axios';
+
 export default {
   data() {
     return {
-      currentPage: 1,
-      perPage: 5,
-      history: [],
-      mockData: [
-        {
-          p_id: "P5223643",
-          pname: "Pentel ดินสอกด เก็บหัวได้ เพนเทล ด้ามโลหะ 0.5mm SS465",
-          p_type: "เครื่องเขียน",
-          quantity: "20",
-          status: "นำเข้า",
-          date: "18/12/2567 22:26",
-          employee: "Admin",
-        },
-        {
-          p_id: "P5223643",
-          pname: "Pentel ดินสอกด เก็บหัวได้ เพนเทล ด้ามโลหะ 0.5mm SS465",
-          p_type: "เครื่องเขียน",
-          quantity: "20",
-          status: "นำเข้า",
-          date: "18/12/2567 22:26",
-          employee: "Admin",
-        },
-        {
-          p_id: "P5223643",
-          pname: "Pentel ดินสอกด เก็บหัวได้ เพนเทล ด้ามโลหะ 0.5mm SS465",
-          p_type: "เครื่องเขียน",
-          quantity: "20",
-          status: "นำเข้า",
-          date: "18/12/2567 22:26",
-          employee: "Admin",
-        },
-        {
-          p_id: "P5223643",
-          pname: "Pentel ดินสอกด เก็บหัวได้ เพนเทล ด้ามโลหะ 0.5mm SS465",
-          p_type: "เครื่องเขียน",
-          quantity: "20",
-          status: "นำเข้า",
-          date: "18/12/2567 22:26",
-          employee: "Admin",
-        },
-        {
-          p_id: "P5223643",
-          pname: "Pentel ดินสอกด เก็บหัวได้ เพนเทล ด้ามโลหะ 0.5mm SS465",
-          p_type: "เครื่องเขียน",
-          quantity: "20",
-          status: "นำเข้า",
-          date: "18/12/2567 22:26",
-          employee: "Admin",
-        },
-        {
-          p_id: "P5223643",
-          pname: "Pentel ดินสอกด เก็บหัวได้ เพนเทล ด้ามโลหะ 0.5mm SS465",
-          p_type: "เครื่องเขียน",
-          quantity: "20",
-          status: "นำเข้า",
-          date: "18/12/2567 22:26",
-          employee: "Admin",
-        },
-        {
-          p_id: "P5223643",
-          pname: "Pentel ดินสอกด เก็บหัวได้ เพนเทล ด้ามโลหะ 0.5mm SS465",
-          p_type: "เครื่องเขียน",
-          quantity: "20",
-          status: "นำเข้า",
-          date: "18/12/2567 22:26",
-          employee: "Admin",
-        },
-      ],
-      useApiData: false,
-    };
-  },
-  // computed: {
-  //   paginatedHistory() {
-  //     const start = (this.currentPage - 1) * this.perPage;
-  //     const end = this.currentPage * this.perPage;
-  //     return this.history.slice(start, end);
-  //   },
-  //   totalPages() {
-  //     return Math.ceil(this.history.length / this.perPage);
-  //   },
-  //   startIndex() {
-  //     return (this.currentPage - 1) * this.perPage;
-  //   },
-  //   endIndex() {
-  //     return Math.min(this.startIndex + this.perPage, this.history.length);
-  //   },
-  //   pages() {
-  //     return Array.from({ length: this.totalPages }, (_, i) => i + 1);
-  //   },
-  // },
-  methods: {
-    async fetchPeopleFromApi() {
-      try {
-        const response = await this.$axios.get("/api/history");
-        this.history = response.data;
-      } catch (error) {
-        console.error("Failed to fetch data from API", error);
-      }
-    },
-    // goToPage(page) {
-    //   if (page >= 1 && page <= this.totalPages) {
-    //     this.currentPage = page;
-    //   }
-    // },
-  },
-  mounted() {
-    if (this.useApiData) {
-      this.fetchPeopleFromApi();
-    } else {
-      this.history = this.mockData;
+      productstock: [],
+      products: [],
+      filters: {
+        page: 0,
+        perpage: 10,
+        isuse: true,
+        max: "desc",
+        search: "",
+        productType: "",
+      },
     }
   },
+
+  methods: {
+    async fetchProducts() {
+      try {
+        const response = await axios.post(
+          "https://project-stock.onrender.com/api/products/products",
+          {
+            page: 0,
+            perpage: 20,
+            isuse: true,
+            max: "desc",
+            search: "",
+            stock: null,
+            productType: ""
+          }
+        );
+        console.log("Products Response: ", response.data);
+        const { data } = response.data; 
+        if (data && data.length > 0) {
+          this.products = data;
+        } else {
+          console.log("No products found");
+        }
+      } catch (error) {
+        console.error("Error fetch product", error);
+      }
+    }
+
+    ,
+
+    async fetchProductstock() {
+      try {
+        const response = await axios.post(
+          "https://project-stock.onrender.com/api/products/get/productstock", this.filters
+        );
+
+
+        const { data } = response.data;
+
+
+        this.productstock = data;
+
+      } catch (error) {
+        console.error("Error fetching product stock:", error);
+      }
+    },
+    formatDate(dateString) {
+      if (!dateString) return ''; 
+      const date = new Date(dateString);
+      if (isNaN(date)) return dateString;
+
+      const day = String(date.getDate()).padStart(2, '0');
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const year = date.getFullYear();
+      const hours = String(date.getHours()).padStart(2, '0');
+      const minutes = String(date.getMinutes()).padStart(2, '0');
+      const seconds = String(date.getSeconds()).padStart(2, '0');
+
+      // รูปแบบวันที่ที่ต้องการ
+      return `${day}-${month}-${year} ${hours}:${minutes}:${seconds}`;
+    }
+    ,
+  },
+
+  mounted() {
+    this.fetchProductstock();
+    this.fetchProducts();
+  },
+
 };
 </script>
