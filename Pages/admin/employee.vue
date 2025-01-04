@@ -260,7 +260,7 @@ export default {
     getdata() {
       this.loading = true;
       axios
-        .get("http://erpstock.servehttp.com:9090/api/users", {
+        .get("https://project-stock.onrender.com/api/users", {
           headers: {
             Authorization: `Bearer ${this.token}`,
           },
