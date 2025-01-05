@@ -94,7 +94,7 @@ export default {
 
       try {
         const response = await axios.post(
-          "https://project-stock.onrender.com/api/products/scanner",
+          "http://localhost:3000/api/products/scanner",
           payload
         );
 

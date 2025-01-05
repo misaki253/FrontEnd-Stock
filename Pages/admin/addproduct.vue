@@ -119,7 +119,7 @@ export default {
     async fetchProductTypes() {
       try {
         const response = await axios.get(
-          "https://project-stock.onrender.com/api/products/get/producttype",
+          "http://localhost:3000/api/products/get/producttype",
           {
             headers: {
               Authorization: `Bearer ${this.token}`,
@@ -144,7 +144,7 @@ export default {
 
       try {
         const { data } = await axios.post(
-          "https://project-stock.onrender.com/api/products/addtype",
+          "http://localhost:3000/api/products/addtype",
           /*
           {
             headers: {
@@ -180,7 +180,7 @@ export default {
         console.log(formData);
         console.log(this.postdata);
         const response = await axios.post(
-          "https://project-stock.onrender.com/api/products/add",
+          "http://localhost:3000/api/products/add",
           formData,
           {
             headers: { "Content-Type": "multipart/form-data" },

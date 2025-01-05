@@ -119,9 +119,6 @@
         </div>
 
         <div class="flex justify-between mt-4">
-          <button @click="editProduct" class="bg-blue-500 text-white px-4 py-2 rounded">
-            แก้ไข
-          </button>
           <button @click="deleteProduct" class="bg-red-500 text-white px-4 py-2 rounded">
             ลบ
           </button>
@@ -193,8 +190,8 @@ export default {
       totalPages: 0,
       isLoading: false,
       showModal: false,
-      showProductModal: false, 
-      selectedProduct: null, 
+      showProductModal: false,
+      selectedProduct: null,
       dataFrom: null,
       dataTo: null,
       filters: {
@@ -390,7 +387,6 @@ export default {
         throw error;
       }
     },
-
 
     openModal() {
       this.showModal = true;

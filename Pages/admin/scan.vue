@@ -6,23 +6,20 @@
         stroke="currentColor" class="size-6 mr-5">
         <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
       </svg>
-
       <h1 class="text-lg font-bold">สแกน Barcode สินค้า</h1>
     </header>
 
-    <div class=" ">
-      <div class="bg-black text-white grid grid-cols-2 min-w-full ">
-        <button @click="setScanMode('deduct')"
-          :class="{ 'bg-yellow-500 text-black': scanMode === 'deduct', 'bg-transparent': scanMode !== 'deduct' }"
-          class="py-2 text-center">
-          หักสินค้า
-        </button>
-        <button @click="setScanMode('check')"
-          :class="{ 'bg-yellow-500 text-black': scanMode === 'check', 'bg-transparent': scanMode !== 'check' }"
-          class="text-center">
-          เช็คสินค้า
-        </button>
-      </div>
+    <div class="bg-black text-white grid grid-cols-2 min-w-full ">
+      <button @click="setScanMode('deduct')"
+        :class="{ 'bg-yellow-500 text-black': scanMode === 'deduct', 'bg-transparent': scanMode !== 'deduct' }"
+        class="py-2 text-center">
+        หักสินค้า
+      </button>
+      <button @click="setScanMode('check')"
+        :class="{ 'bg-yellow-500 text-black': scanMode === 'check', 'bg-transparent': scanMode !== 'check' }"
+        class="text-center">
+        เช็คสินค้า
+      </button>
     </div>
 
     <div class="justify-center h-full relative">
@@ -36,9 +33,8 @@
       class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
       <div class="bg-white p-5 rounded-lg max-w-md w-full">
         <h3 class="text-xl font-bold mb-4">ข้อมูลสินค้า</h3>
-        <img :src="'https://project-stock.onrender.com/images/' + foundProduct.productPicture" alt="Product Image"
+        <img :src="'http://localhost:3000/images/' + foundProduct.productPicture" alt="Product Image"
           class="w-full h-auto rounded-md mb-4">
-
         <p><strong>ชื่อสินค้า:</strong> {{ foundProduct.productName }}</p>
         <p><strong>จำนวนคงเหลือ:</strong> {{ foundProduct.productTotal }}</p>
         <button @click="closeModal" class="mt-4 w-full bg-blue-500 text-white py-2 rounded-md">ปิด</button>
@@ -86,8 +82,15 @@ export default {
     },
 
     startCamera() {
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        alert("เบราว์เซอร์ของคุณไม่รองรับการเข้าถึงกล้อง");
+        return;
+      }
+
       const constraints = {
-        video: true, // เปิดกล้อง
+        video: {
+          facingMode: "environment", // ใช้กล้องหลัง
+        },
       };
       navigator.mediaDevices
         .getUserMedia(constraints)
@@ -103,43 +106,45 @@ export default {
         })
         .catch((error) => {
           console.error("ไม่สามารถเปิดกล้องได้:", error);
+          alert("ไม่สามารถเปิดกล้องได้ กรุณาอนุญาตการเข้าถึงกล้องในเบราว์เซอร์ของคุณ");
         });
     },
 
     scanBarcode(videoElement) {
-      // ตรวจสอบว่าเป็นการสแกนแล้วหรือยัง
       if (this.isScanning) return;
 
-      this.isScanning = true; // ตั้งสถานะเป็นกำลังสแกน
-
-      // Initialize Quagga for barcode scanning
+      this.isScanning = true; // ตั้งสถานะการสแกน
       Quagga.init(
         {
           inputStream: {
             type: "LiveStream",
-            target: videoElement,
+            target: this.$refs.scanner, // วิดีโอ element
+            constraints: {
+              facingMode: "environment", // ใช้กล้องหลัง
+            },
           },
           decoder: {
             readers: ["code_128_reader", "ean_reader", "ean_8_reader", "upc_reader", "upc_e_reader"],
           },
-      },
+        },
         (err) => {
           if (err) {
-            console.error("Unable to initialize Quagga:", err);
+            console.error("Quagga init error:", err);
+            this.isScanning = false; // รีเซ็ตสถานะเมื่อเกิดข้อผิดพลาด
             return;
           }
-          Quagga.start();
+          Quagga.start(); // เริ่มต้นการสแกน
         }
       );
 
       Quagga.onDetected((data) => {
         if (data && data.codeResult && data.codeResult.code) {
-          this.barcodeData = data.codeResult.code;
           console.log("Scanned barcode:", data.codeResult.code);
-          Quagga.stop(); // หยุดการสแกนเมื่อพบบาร์โค้ด
-          this.isScanning = false; // ตั้งสถานะเป็นไม่สแกนแล้ว
-          this.handleBarcode(data.codeResult.code);
-          return; // ออกจากฟังก์ชันเพื่อป้องกันการทำงานซ้ำ
+          this.barcodeData = data.codeResult.code;
+
+          Quagga.stop(); // หยุดการสแกนเมื่อพบข้อมูล
+          this.isScanning = false; // รีเซ็ตสถานะ
+          this.handleBarcode(data.codeResult.code); // จัดการข้อมูลบาร์โค้ดที่สแกนได้
         }
       });
 
@@ -176,7 +181,7 @@ export default {
 
     async handleBarcode(barcode) {
       try {
-        const response = await axios.post('https://project-stock.onrender.com/api/products/products', {
+        const response = await axios.post('http://localhost:3000/api/products/products', {
           search: barcode,
         });
 

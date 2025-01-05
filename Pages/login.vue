@@ -6,6 +6,18 @@
       </h2>
 
 
+      <div v-if="showModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+        <div class="bg-white rounded-lg shadow-md p-6 w-80">
+          <h3 class="text-xl font-bold text-center text-red-500">Error</h3>
+          <p class="text-center text-gray-700">{{ errorMessage }}</p>
+          <div class="mt-4 text-center">
+            <button @click="closeModal" class="bg-blue-500 text-white py-2 px-4 rounded-md">
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+
       <div v-if="isLoading" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
         <div class="flex flex-col items-center bg-white rounded-lg shadow-md p-6">
           <svg class="animate-spin h-8 w-8 text-blue-500 mb-4" xmlns="http://www.w3.org/2000/svg" fill="none"
@@ -15,11 +27,11 @@
               d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.963 7.963 0 014 12H0c0 2.28.804 4.372 2.136 6.045l1.864-1.754z">
             </path>
           </svg>
-          <p class="text-gray-700 text-center">Loading, please wait...</p>
+          <p class="text-gray-700 text-center">please wait...</p>
         </div>
       </div>
 
-      
+
       <form v-if="isLogin" @submit.prevent="login">
         <div class="mb-4">
           <label class="block text-gray-700">Username</label>
@@ -115,9 +127,17 @@ export default {
         role: "employee",
       },
       errorMessage: "",
+      showModal: false,
     };
   },
-
+  mounted() {
+    const userRole = Cookies.get("userRole");
+    if (userRole === "admin") {
+      console.log("Welcome, Admin!");
+    } else if (userRole === "employee") {
+      console.log("Welcome, Employee!");
+    }
+  },
   methods: {
     async login() {
       if (!this.logindata.username || !this.logindata.password) {
@@ -128,8 +148,8 @@ export default {
       this.isLoading = true;
       try {
         const { data } = await axios.post(
-          "https://project-stock.onrender.com/api/login",
-          // "http://localhost:3000/api/login",
+          "http://localhost:3000/api/login",
+          // "http://http://localhost:3000/api/login",
           {
             username: this.logindata.username,
             password: this.logindata.password,
@@ -137,6 +157,7 @@ export default {
         );
 
         Cookies.set("token", data.token);
+        Cookies.set("userRole", data.role);
         if (data.role === "admin") {
           this.$router.push("/admin/homepage");
         } else {
@@ -144,20 +165,26 @@ export default {
         }
       } catch (error) {
         console.error("Login error:", error);
+        this.showModal = true;
+      } finally {
+        this.isLoading = false;
       }
     },
 
     async register() {
-      console.log("Register data:", this.registerData); // ตรวจสอบค่าก่อนส่ง
+      console.log("Register data:", this.registerData); 
+      this.isLoading = true;
       try {
         const { data } = await axios.post(
-          "https://project-stock.onrender.com/api/register",
-          // "https://localhost:3000/api/register",
+          "http://localhost:3000/api/register",
+          // "https://http://localhost:3000/api/register",
           this.registerData
         );
         if (data) {
           this.$router.push("/login");
           this.registerData = { ...this.clearregisterData };
+
+          window.location.reload();
         }
       } catch (error) {
         console.error("Register error:", error);
@@ -165,7 +192,12 @@ export default {
           this.errorMessage =
             error.response.data.message || "เกิดข้อผิดพลาดในการลงทะเบียน";
         }
+      } finally {
+        this.isLoading = false;
       }
+    },
+    closeModal() {
+      this.showModal = false;
     },
   },
 };

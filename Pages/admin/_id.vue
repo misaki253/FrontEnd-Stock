@@ -3,7 +3,7 @@
     <h1 class="text-3xl font-semibold mb-4">{{ product.productName }}</h1>
     <div class="mb-4">
       <img
-        :src="'https://project-stock.onrender.com/images/' + product.productPicture"
+        :src="'http://localhost:3000/images/' + product.productPicture"
         alt="Product Picture"
         class="w-48 h-48 object-cover mb-4"
       />
@@ -21,7 +21,7 @@ export default {
   async asyncData({ params }) {
     try {
       const response = await axios.get(
-        `https://project-stock.onrender.com/api/products/products/${params.id}`
+        `http://localhost:3000/api/products/products/${params.id}`
       );
       return { product: response.data.data };
     } catch (error) {
