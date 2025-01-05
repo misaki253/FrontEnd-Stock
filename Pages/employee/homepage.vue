@@ -99,7 +99,7 @@ export default {
     async fetchProducts() {
       try {
         const response = await axios.post(
-          "http://localhost:3000/api/products/products",
+          "https://project-stock.onrender.com/api/products/products",
           {
             page: 0,
             perpage: 20,
@@ -127,7 +127,7 @@ export default {
     async fetchProductstock() {
       try {
         const response = await axios.post(
-          "http://localhost:3000/api/products/get/productstock", this.filters
+          "https://project-stock.onrender.com/api/products/get/productstock", this.filters
         );
 
 

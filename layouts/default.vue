@@ -1,15 +1,15 @@
 <template>
     <header v-if="!isScanPage" class="fixed top-0 left-0 w-full z-10 bg-white">
         <nav>
-            <div class="grid grid-flow-col gap-4 p-4">
+            <div v-if="userRole === 'admin'" class="grid grid-flow-col gap-4 p-4">
                 <div class="flex justify-end">
-                    <div @click="logout">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="42" height="42" fill="none" viewBox="0 0 96 96"
-                            id="exit">
-                            <path stroke="#12182B" stroke-linecap="round" stroke-width="5"
-                                d="M64 35.7059V16C64 12.6863 61.3137 10 58 10H19C15.6863 10 13 12.6863 13 16V80C13 83.3137 15.6863 86 19 86H58C61.3137 86 64 83.3137 64 80V61.9706M77 58L83.818 51.182C85.5754 49.4246 85.5754 46.5754 83.818 44.818L77 38M74 48H47">
-                            </path>
+                    <div @click="openModal">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" transform="rotate(180)"
+                            stroke-width="1.5" stroke="currentColor" class="size-6">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3H15" />
                         </svg>
+
                     </div>
                 </div>
             </div>
@@ -17,10 +17,8 @@
     </header>
 
     <div class="flex h-full">
-        <aside v-if="!isScanPage" :class="[
-            isSidebarOpen ? 'translate-x-0' : '-translate-x-full',
-            'fixed z-30 w-60 h-full bg-gray-800 text-white transition-transform xl:translate-x-0',
-        ]">
+        <aside v-if="!isScanPage"
+            :class="[isSidebarOpen ? 'translate-x-0' : '-translate-x-full', 'fixed z-30 w-60 h-full bg-gray-800 text-white transition-transform xl:translate-x-0 flex flex-col']">
             <div class="p-5 h-14">
                 <button @click="toggleSidebar" class="text-xl focus:outline-none xl:hidden" aria-label="Toggle Sidebar">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -33,7 +31,7 @@
                     Logo
                 </div>
             </div>
-            <nav class="p-4 h-5/6">
+            <nav class="p-4 h-full flex-1">
                 <ul class="space-y-4">
                     <li>
                         <NuxtLink :to="userRole === 'employee' ? '/employee/homepage' : '/admin/homepage'"
@@ -54,7 +52,6 @@
                                 <path stroke-linecap="round" stroke-linejoin="round"
                                     d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
                             </svg>
-
                             <span class="ml-2">Employee</span>
                         </NuxtLink>
                     </li>
@@ -71,7 +68,6 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
                             </svg>
                         </div>
-
                         <ul v-if="isDropdownOpen" class="py-2 space-y-2">
                             <li>
                                 <a :href="userRole === 'employee' ? '/employee/product' : '/admin/product'"
@@ -86,7 +82,7 @@
                                 </a>
                             </li>
                             <li>
-                                <a href="/admin/genbarcode"
+                                <a href="/genbarcode"
                                     class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700 hover:text-yellow-500">
                                     Print Barcode/QR
                                 </a>
@@ -96,8 +92,19 @@
                 </ul>
             </nav>
 
-
+            <!-- Footer -->
+            <footer class="p-5">
+                <div @click="openModal" class="flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3H15" />
+                    </svg>
+                    <span>Logout</span>
+                </div>
+            </footer>
         </aside>
+
 
         <main :class="[
             !isScanPage ? 'block xl:ml-64 mt-20 mb-20' : 'block',
@@ -108,7 +115,7 @@
 
         <footer v-if="!isScanPage"
             class="fixed bottom-0 left-0 w-full bg-white shadow-lg z-10 flex items-center justify-between px-4 py-2 xl:hidden">
-            <nuxt-link to="/admin/homepage">
+            <nuxt-link :to="userRole === 'employee' ? '/employee/homepage' : '/admin/homepage'">
                 <div class="flex flex-col items-center text-gray-500">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="size-6">
@@ -119,7 +126,7 @@
                     <span class="text-xs">Home</span>
                 </div>
             </nuxt-link>
-            <nuxt-link to="/admin/product">
+            <nuxt-link :to="userRole === 'employee' ? '/employee/product' : '/admin/product'">
                 <div class="flex flex-col items-center text-gray-500">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="size-6">
@@ -131,7 +138,7 @@
                 </div>
             </nuxt-link>
 
-            <nuxt-link to="/admin/scan">
+            <nuxt-link to="/scan">
                 <div class="relative flex justify-center">
                     <button
                         class="bg-black rounded-full w-16 h-16 flex items-center justify-center text-white absolute -top-10 shadow-md border-4 border-white">
@@ -146,7 +153,7 @@
                 </div>
             </nuxt-link>
 
-            <nuxt-link to="/admin/employee">
+            <nuxt-link v-if="userRole === 'admin'" to="/admin/employee">
                 <div class="flex flex-col items-center text-gray-500">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="size-6">
@@ -158,19 +165,51 @@
                 </div>
             </nuxt-link>
 
-            <nuxt-link to="/admin/picking">
+
+
+            <nuxt-link to="/picking">
                 <div class="flex flex-col items-center text-gray-500">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="size-6">
                         <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.325.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 0 1 1.37.49l1.296 2.247a1.125 1.125 0 0 1-.26 1.431l-1.003.827c-.293.241-.438.613-.43.992a7.723 7.723 0 0 1 0 .255c-.008.378.137.75.43.991l1.004.827c.424.35.534.955.26 1.43l-1.298 2.247a1.125 1.125 0 0 1-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.47 6.47 0 0 1-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 0 1-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 0 1-1.369-.49l-1.297-2.247a1.125 1.125 0 0 1 .26-1.431l1.004-.827c.292-.24.437-.613.43-.991a6.932 6.932 0 0 1 0-.255c.007-.38-.138-.751-.43-.992l-1.004-.827a1.125 1.125 0 0 1-.26-1.43l1.297-2.247a1.125 1.125 0 0 1 1.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.086.22-.128.332-.183.582-.495.644-.869l.214-1.28Z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                            d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
                     </svg>
 
-                    <span class="text-xs">Setting</span>
+
+                    <span class="text-xs">Picking</span>
                 </div>
+
             </nuxt-link>
+
+            <div v-if="userRole === 'employee'" @click="openModal" class="flex flex-col items-center text-gray-500">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" transform="rotate(180)"
+                    stroke-width="1.5" stroke="currentColor" class="size-6">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3H15" />
+                </svg>
+
+                <span class="text-xs">Logout</span>
+            </div>
+
         </footer>
+    </div>
+    <div @click="openModal" v-if="showModal"
+        class="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center z-40">
+        <div class="bg-white p-8 rounded-lg shadow-lg w-80">
+            <div class="flex justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    stroke="currentColor" class="size-20">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 5.25h.008v.008H12v-.008Z" />
+                </svg>
+
+            </div>
+            <h3 class="text-l text-center font-semibold mb-4">ต้องการออกจากระบบใช่หรือไม่ ?</h3>
+            <div class="flex justify-between">
+                <button @click="cancelLogout" class="px-4 py-2 bg-gray-400 text-white rounded">Cancel</button>
+                <button @click="confirmLogout" class="px-4 py-2 bg-red-600 text-white rounded">Logout</button>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -186,15 +225,16 @@ export default {
             isDropdownOpen: false,
             isSidebarOpen: false,
             userRole: null,
+            showModal: false,
         };
     },
     mounted() {
-        this.userRole = Cookies.get('userRole');  // ตั้งค่า userRole หลังจากคอมโพเนนต์ถูกติดตั้ง
-        console.log('userRole:', this.userRole); // ใช้ log เพื่อตรวจสอบให้แน่ใจว่าค่าถูกโหลดมาแล้ว
+        this.userRole = Cookies.get('userRole');
+        console.log('userRole:', this.userRole);
     },
     computed: {
         isScanPage() {
-            return this.$route.path === "/admin/scan"
+            return this.$route.path === "/scan"
         },
     },
     methods: {
@@ -205,24 +245,19 @@ export default {
         toggleDropdown() {
             this.isDropdownOpen = !this.isDropdownOpen;
         },
-        logout() {
-            const confirmLogout = confirm("Are you sure you want to log out?");
+        openModal() {
+            this.showModal = true;
+        },
+        cancelLogout() {
+            this.showModal = false;
+        },
+        confirmLogout() {
             Cookies.remove("token");
-
-            if (confirmLogout) {
-                
-                Cookies.remove("token");
-                Cookies.remove("userRole");
-
-                
-                this.$router.push("/login");
-            } else {
-                
-                console.log("User cancelled the logout.");
-            }
+            Cookies.remove("userRole");
+            this.$router.push("/login");
         },
     },
-    };
+};
 
 </script>
 

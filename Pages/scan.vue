@@ -33,7 +33,7 @@
       class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
       <div class="bg-white p-5 rounded-lg max-w-md w-full">
         <h3 class="text-xl font-bold mb-4">ข้อมูลสินค้า</h3>
-        <img :src="'http://localhost:3000/images/' + foundProduct.productPicture" alt="Product Image"
+        <img :src="'https://project-stock.onrender.com/images/' + foundProduct.productPicture" alt="Product Image"
           class="w-full h-auto rounded-md mb-4">
         <p><strong>ชื่อสินค้า:</strong> {{ foundProduct.productName }}</p>
         <p><strong>จำนวนคงเหลือ:</strong> {{ foundProduct.productTotal }}</p>
@@ -181,7 +181,7 @@ export default {
 
     async handleBarcode(barcode) {
       try {
-        const response = await axios.post('http://localhost:3000/api/products/products', {
+        const response = await axios.post('https://project-stock.onrender.com/api/products/products', {
           search: barcode,
         });
 
@@ -231,6 +231,7 @@ export default {
   },
   mounted() {
     this.startCamera();
+    
   },
   beforeDestroy() {
     if (this.videoStream) {

@@ -148,8 +148,8 @@ export default {
       this.isLoading = true;
       try {
         const { data } = await axios.post(
-          "http://localhost:3000/api/login",
-          // "http://http://localhost:3000/api/login",
+          "https://project-stock.onrender.com/api/login",
+          // "http://https://project-stock.onrender.com/api/login",
           {
             username: this.logindata.username,
             password: this.logindata.password,
@@ -176,8 +176,8 @@ export default {
       this.isLoading = true;
       try {
         const { data } = await axios.post(
-          "http://localhost:3000/api/register",
-          // "https://http://localhost:3000/api/register",
+          "https://project-stock.onrender.com/api/register",
+          // "https://https://project-stock.onrender.com/api/register",
           this.registerData
         );
         if (data) {
