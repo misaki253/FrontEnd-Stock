@@ -51,7 +51,7 @@
           </div>
         </div>
 
-        <div>
+        <div @click="importProduct">
           <button class="flex items-center space-x-2 bg-yellow-500 px-5 py-2 rounded">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
               stroke="currentColor" class="size-6">
